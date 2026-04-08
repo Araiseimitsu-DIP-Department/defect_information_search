@@ -1,0 +1,636 @@
+Option Compare Database
+Option Explicit
+
+'エクスポートボタン
+Private Sub btnExport_Click()
+    Dim xls As Object
+    Dim wkb As Object
+    Dim rst As DAO.Recordset
+    Dim idx As Long
+    Dim sPath As String
+    
+    'レコードが存在しない場合処理を中止
+    If Me.f_mainのサブフォーム2.Form.Recordset.RecordCount = 0 Then
+        MsgBox "出力出来るデータがありません。", vbOKOnly + vbExclamation, "確認"
+        Me.txtHinban.SetFocus
+        Exit Sub
+    End If
+    
+    If MsgBox("Excelデータへのエクスポートを行います。実行しますか？", vbQuestion + vbYesNo, "確認") <> vbYes Then
+        Me.txtHinban.SetFocus
+        Exit Sub
+    End If
+
+    On Error GoTo Err_btnExport_Click
+    
+    DoCmd.SetWarnings False
+
+    Set rst = Me.f_mainのサブフォーム2.Form.RecordsetClone
+    rst.MoveFirst                                           'レコードセットの先頭に移動
+    
+    Set xls = CreateObject("Excel.Application")             'Excelオブジェクトを作成
+    Set wkb = xls.Workbooks.Add()                           '作成されたExcelファイルにワークブックを追加
+
+    '追加されたワークブックに、レコードセットのデータをコピー
+    With wkb.Worksheets(1)
+        For idx = 1 To rst.Fields.Count                     'Excel側のヘッダ部
+            .Cells(1, idx).Value = rst.Fields(idx - 1).Name
+        Next
+        .Range("A2").CopyFromRecordset Data:=rst            'データ部分
+    End With
+
+    'Excelを保存
+    sPath = Application.CurrentProject.Path                                         'Accressと同じフォルダ
+    xls.Application.DisplayAlerts = False                                           '上書き確認メッセージを出さない
+    wkb.Close SaveChanges:=True, FileName:=sPath & "\" & "部品別不具合情報.xlsx"    '保存
+    
+    MsgBox "Excelファイルへ保存しました(部品別不具合情報.xlsx)", vbInformation + vbOKOnly, "確認"
+
+Exit_btnExport_Click:
+    On Error Resume Next
+    
+    rst.Close
+    Set rst = Nothing
+    Set wkb = Nothing
+    Set xls = Nothing
+
+    DoCmd.SetWarnings True
+    Me.txtHinban.SetFocus
+    
+    Exit Sub
+Err_btnExport_Click:
+    MsgBox Err.Description
+    Resume Exit_btnExport_Click
+
+End Sub
+
+'不具合情報（全品番）エクスポートボタン
+Private Sub btnExportAll_Click()
+    Dim xls As Object
+    Dim wkb As Object
+    Dim rst As DAO.Recordset
+    Dim idx As Long
+    Dim sPath As String
+    Dim strSQL As String
+    
+    If IsNull(Me.txtKaisibi) Or IsNull(Me.txtShuuryoubi) Then
+        MsgBox "開始日と終了日は必ず指定してください", vbCritical + vbOKOnly, "確認"
+        Me.txtKaisibi.SetFocus
+        Exit Sub
+    End If
+    
+    On Error GoTo Err_btnExportAll_Click
+    
+    If MsgBox("Excelへのデータエクスポートを行いますか？", vbQuestion + vbYesNo, "確認") <> vbYes Then Exit Sub
+    
+    Me.lblShorichuu.Visible = True
+    DoEvents
+
+    DoCmd.SetWarnings False
+
+    strSQL = "SELECT * FROM t_不具合情報 "
+    strSQL = strSQL & "WHERE 指示日 Between #" & Me.txtKaisibi & "# AND #" & Me.txtShuuryoubi & "# "
+    strSQL = strSQL & "ORDER BY 品番, 指示日;"
+    
+    Set rst = CurrentDb.OpenRecordset(strSQL)   'レコードセットを開く
+
+    'レコードが存在しない場合処理を中止
+    If rst.RecordCount = 0 Then
+        MsgBox "対象期間のデータがありません。", vbOKOnly + vbExclamation, "確認"
+        GoTo Exit_btnExportAll_Click
+    End If
+
+    rst.MoveFirst                                           'レコードセットの先頭に移動
+    
+    Set xls = CreateObject("Excel.Application")             'Excelオブジェクトを作成
+    Set wkb = xls.Workbooks.Add()                           '作成されたExcelファイルにワークブックを追加
+
+    '追加されたワークブックに、レコードセットのデータをコピー
+    With wkb.Worksheets(1)
+        For idx = 1 To rst.Fields.Count                     'Excel側のヘッダ部
+            .Cells(1, idx).Value = rst.Fields(idx - 1).Name
+        Next
+        .Range("A2").CopyFromRecordset Data:=rst            'データ部分
+    End With
+
+    'Excelを保存
+    sPath = Application.CurrentProject.Path                                         'Accressと同じフォルダ
+    xls.Application.DisplayAlerts = False                                           '上書き確認メッセージを出さない
+    wkb.Close SaveChanges:=True, FileName:=sPath & "\" & "不具合情報一覧.xlsx"  '保存
+    
+    MsgBox "Excelファイルへ保存しました(不具合情報一覧.xlsx)", vbInformation + vbOKOnly, "確認"
+    
+Exit_btnExportAll_Click:
+    On Error Resume Next
+    
+    rst.Close               'レコードセットを閉じる
+    Set rst = Nothing
+    Set wkb = Nothing
+    Set xls = Nothing
+
+    DoCmd.SetWarnings True
+    Me.lblShorichuu.Visible = False
+    
+    Me.txtHinban.SetFocus
+    Exit Sub
+Err_btnExportAll_Click:
+    MsgBox Err.Description
+    Resume Exit_btnExportAll_Click
+End Sub
+
+'不具合情報（全品番）エクスポートボタン
+Private Sub btnExportAgg_Click()
+    Dim xls As Object
+    Dim wkb As Object
+    Dim rst As DAO.Recordset
+    Dim idx As Long
+    Dim sPath As String
+    Dim strSQL As String
+    
+    If IsNull(Me.txtKaisibi) Or IsNull(Me.txtShuuryoubi) Then
+        MsgBox "開始日と終了日は必ず指定してください", vbCritical + vbOKOnly, "確認"
+        Me.txtKaisibi.SetFocus
+        Exit Sub
+    End If
+    
+    On Error GoTo Err_btnExportAll_Click
+    
+    If MsgBox("Excelへのデータエクスポートを行いますか？", vbQuestion + vbYesNo, "確認") <> vbYes Then Exit Sub
+    
+    Me.lblShorichuu.Visible = True
+    DoEvents
+
+    DoCmd.SetWarnings False
+
+    strSQL = "SELECT DISTINCT 生産ロットID, 品番, 指示日, 号機, 検査者1, 検査者2, 検査者3, 検査者4, 検査者5, "
+    strSQL = strSQL & "時間, 数量, t_製品マスタ.製品単重 AS 単重, t_製品マスタ.材質, t_製品マスタ.単価, "
+    strSQL = strSQL & "[廃棄不具合数]*[単重] AS 廃棄量, [廃棄不具合数]*[単価] AS 廃棄金額, [総不具合数]-[切粉] AS 廃棄不具合数, "
+    strSQL = strSQL & "総不具合数, 不良率, 外観キズ, 圧痕, 切粉, 毟れ, 穴大, 穴小, 穴キズ, バリ, 短寸, 面粗, サビ, ボケ, 挽目, "
+    strSQL = strSQL & "汚れ, メッキ, 落下, フクレ, ツブレ, ボッチ, 段差, バレル石, 径プラス, 径マイナス, ゲージ, 異物混入, "
+    strSQL = strSQL & "形状不良, こすれ, 変色シミ, 材料キズ, ゴミ, その他, その他内容 "
+    strSQL = strSQL & "FROM t_不具合情報 LEFT JOIN t_製品マスタ ON t_不具合情報.品番 = t_製品マスタ.製品番号 "
+    strSQL = strSQL & "WHERE ([総不具合数]-[切粉])>0 "
+    strSQL = strSQL & "AND (指示日 BETWEEN #" & Me.txtKaisibi & "# AND #" & Me.txtShuuryoubi & "#) "
+    strSQL = strSQL & "AND (LEFT(生産ロットID,1))='P' "
+    strSQL = strSQL & "AND ([総不具合数]-[切粉])*[単価]>0 "
+    strSQL = strSQL & "ORDER BY 品番, 指示日;"
+    
+    Set rst = CurrentDb.OpenRecordset(strSQL)   'レコードセットを開く
+
+    'レコードが存在しない場合処理を中止
+    If rst.RecordCount = 0 Then
+        MsgBox "対象期間のデータがありません。", vbOKOnly + vbExclamation, "確認"
+        GoTo Exit_btnExportAll_Click
+    End If
+
+    rst.MoveFirst                                           'レコードセットの先頭に移動
+    
+    Set xls = CreateObject("Excel.Application")             'Excelオブジェクトを作成
+    Set wkb = xls.Workbooks.Add()                           '作成されたExcelファイルにワークブックを追加
+
+    '追加されたワークブックに、レコードセットのデータをコピー
+    With wkb.Worksheets(1)
+        For idx = 1 To rst.Fields.Count                     'Excel側のヘッダ部
+            .Cells(1, idx).Value = rst.Fields(idx - 1).Name
+        Next
+        .Range("A2").CopyFromRecordset Data:=rst            'データ部分
+        
+        '書式等設定
+        .Range("A1").AutoFilter 'フィルター
+        .Columns("A:L").EntireColumn.AutoFit  '列の幅
+        .Columns("E:I").Hidden = True '検査者1~5 非表示
+        .Columns("O").Interior.Color = RGB(218, 242, 208) '廃棄量 薄緑
+        .Columns("P").Interior.Color = RGB(251, 226, 213) '廃棄金額 薄橙
+        .Columns("S").NumberFormatLocal = "0.00%" '不良率 書式変更
+        .Range("A2").SELECT
+        xls.ActiveWindow.FreezePanes = True '先頭行を固定
+        .Range("A1").SELECT
+    End With
+
+    'Excelを保存
+    sPath = Application.CurrentProject.Path                                         'Accressと同じフォルダ
+    xls.Application.DisplayAlerts = False                                           '上書き確認メッセージを出さない
+    wkb.Close SaveChanges:=True, FileName:=sPath & "\" & Format(Me.txtKaisibi, "yymmdd") & "~" & Format(Me.txtShuuryoubi, "yymmdd") & "集計データ.xlsx" '保存
+    
+    MsgBox "Excelファイルへ保存しました(" & Format(Me.txtKaisibi, "yymmdd") & "~" & Format(Me.txtShuuryoubi, "yymmdd") & "集計データ.xlsx)", vbInformation + vbOKOnly, "確認"
+    
+Exit_btnExportAll_Click:
+    On Error Resume Next
+    
+    rst.Close               'レコードセットを閉じる
+    Set rst = Nothing
+    Set wkb = Nothing
+    Set xls = Nothing
+
+    DoCmd.SetWarnings True
+    Me.lblShorichuu.Visible = False
+    
+    Me.txtHinban.SetFocus
+    Exit Sub
+Err_btnExportAll_Click:
+    MsgBox Err.Description
+    Resume Exit_btnExportAll_Click
+End Sub
+
+'廃棄重量データエクスポートボタン
+Private Sub btnHaikiExp_Click()
+    Dim xls As Object
+    Dim wkb As Object
+    Dim rst As DAO.Recordset
+    Dim idx As Long
+    Dim sPath As String
+    Dim strSQL As String
+    
+    If IsNull(Me.txtKaisibi) Or IsNull(Me.txtShuuryoubi) Then
+        MsgBox "開始日と終了日は必ず指定してください", vbCritical + vbOKOnly, "確認"
+        Me.txtKaisibi.SetFocus
+        Exit Sub
+    End If
+    
+    On Error GoTo Err_btnHaikiExp_Click
+    
+    If MsgBox("廃棄データのExcelへのデータエクスポートを行いますか？", vbQuestion + vbYesNo, "確認") <> vbYes Then Exit Sub
+    
+    Me.lblShorichuu.Visible = True
+    DoEvents
+
+    DoCmd.SetWarnings False
+
+    strSQL = "SELECT DISTINCT t_不具合情報.品番, t_不具合情報.生産ロットID, [総不具合数]-[切粉] AS 廃棄数, "
+    strSQL = strSQL & "t_製品マスタ.製品単重, [廃棄数]*[製品単重] AS 廃棄量, t_製品マスタ.材料識別, "
+    strSQL = strSQL & "t_製品マスタ.単価, [廃棄数]*[単価] AS 廃棄金額, t_製品マスタ.客先名 "
+    strSQL = strSQL & "FROM (t_不具合情報 LEFT JOIN t_QR履歴 ON t_不具合情報.生産ロットID = t_QR履歴.生産ロットID) "
+    strSQL = strSQL & "LEFT JOIN t_製品マスタ ON t_不具合情報.品番 = t_製品マスタ.製品番号 "
+    strSQL = strSQL & "WHERE ( [総不具合数]-[切粉] ) > 0 "
+    strSQL = strSQL & "AND (t_QR履歴.日付 Between #" & Me.txtKaisibi & "# AND #" & Me.txtShuuryoubi & "#) "
+    strSQL = strSQL & "AND t_QR履歴.工程コード='03' AND LEFT(t_不具合情報.生産ロットID, 1) = 'P' "
+    strSQL = strSQL & "ORDER BY t_不具合情報.品番, t_不具合情報.生産ロットID;"
+    
+'これは、現品票の指示日を集計期間としたSQL--検査日基準との差異を確認するためのSQL(使用しない)
+'    strSQL = "SELECT DISTINCT t_不具合情報.品番, t_不具合情報.生産ロットID, [総不具合数]-[切粉] AS 廃棄数, "
+'    strSQL = strSQL & "t_製品マスタ.製品単重, [廃棄数]*[製品単重] AS 廃棄量, t_製品マスタ.材料識別 "
+'    strSQL = strSQL & "FROM (t_不具合情報 LEFT JOIN t_QR履歴 ON t_不具合情報.生産ロットID = t_QR履歴.生産ロットID) "
+'    strSQL = strSQL & "LEFT JOIN t_製品マスタ ON t_不具合情報.品番 = t_製品マスタ.製品番号 "
+'    strSQL = strSQL & "WHERE ( [総不具合数]-[切粉] ) > 0 "
+'    strSQL = strSQL & "AND (t_不具合情報.指示日 Between #" & Me.txtKaisibi & "# AND #" & Me.txtShuuryoubi & "#) "
+'    strSQL = strSQL & "ORDER BY t_不具合情報.品番, t_不具合情報.生産ロットID;"
+    
+    Set rst = CurrentDb.OpenRecordset(strSQL)   'レコードセットを開く
+
+    'レコードが存在しない場合処理を中止
+    If rst.RecordCount = 0 Then
+        MsgBox "対象期間のデータがありません。", vbOKOnly + vbExclamation, "確認"
+        GoTo Exit_btnHaikiExp_Click
+    End If
+
+    rst.MoveFirst                                           'レコードセットの先頭に移動
+    
+    Set xls = CreateObject("Excel.Application")             'Excelオブジェクトを作成
+    Set wkb = xls.Workbooks.Add()                           '作成されたExcelファイルにワークブックを追加
+
+    '追加されたワークブックに、レコードセットのデータをコピー
+    With wkb.Worksheets(1)
+        For idx = 1 To rst.Fields.Count                     'Excel側のヘッダ部
+            .Cells(1, idx).Value = rst.Fields(idx - 1).Name
+        Next
+        .Range("A2").CopyFromRecordset Data:=rst            'データ部分
+        .Columns("A:I").AutoFit                             '列幅の自動調整
+    End With
+
+    'Excelを保存
+    sPath = Application.CurrentProject.Path                                             'Accressと同じフォルダ
+    xls.Application.DisplayAlerts = False                                               '上書き確認メッセージを出さない
+    wkb.Close SaveChanges:=True, FileName:=sPath & "\" & "廃棄重量・金額データ.xlsx"    '保存
+    
+    MsgBox "Excelファイルへ保存しました(廃棄重量・金額データ.xlsx)", vbInformation + vbOKOnly, "確認"
+    
+Exit_btnHaikiExp_Click:
+    On Error Resume Next
+    
+    rst.Close               'レコードセットを閉じる
+    Set rst = Nothing
+    Set wkb = Nothing
+    Set xls = Nothing
+
+    DoCmd.SetWarnings True
+    Me.lblShorichuu.Visible = False
+    
+    Me.txtHinban.SetFocus
+    Exit Sub
+Err_btnHaikiExp_Click:
+    MsgBox Err.Description
+    Resume Exit_btnHaikiExp_Click
+
+End Sub
+
+'検索ボタン
+Private Sub btnKensaku_Click()
+    Dim strSQL As String
+    
+    If IsNull(Me.txtDateFrom) Or IsNull(Me.txtDateTo) Then
+        MsgBox "日付は必ず指定してください", vbCritical + vbOKOnly, "確認"
+        Me.txtDateFrom.SetFocus
+        Exit Sub
+    End If
+    
+    If Not IsNull(Me.txtHinban) Then
+        strSQL = "SELECT DISTINCT 品番, 品名, 客先 "
+        strSQL = strSQL & "FROM t_現品票検索用 "
+        strSQL = strSQL & "WHERE 品番 Like '*" & Me.txtHinban & "*' "
+        
+        Me.f_Mainのサブフォーム1.Form.RecordSource = strSQL
+    
+        ClearDisp   '画面消去(サブフォームも)
+        
+        If Me.f_Mainのサブフォーム1.Form.Recordset.RecordCount = 0 Then         '見つからない
+            MsgBox "該当する品番はありません", vbCritical + vbOKOnly, "確認"
+        ElseIf Me.f_Mainのサブフォーム1.Form.Recordset.RecordCount = 1 Then     '1件のみ該当
+            Me.txtHinban = Me.f_Mainのサブフォーム1.Form.品番
+            Me.txtHinmei = Me.f_Mainのサブフォーム1.Form.品名
+            Me.txtKyaku = Me.f_Mainのサブフォーム1.Form.客先
+            GoukeiDisp
+        Else                                                                    '2件以上見つかった
+        End If
+    End If
+    
+    Me.cboGouki = "全て"        '号機選択のデフォルト値
+    
+    Me.Refresh
+    Me.txtHinban.SetFocus
+End Sub
+
+'終了ボタン
+Private Sub btnQuit_Click()
+    DoCmd.Quit
+End Sub
+
+'号機が変わった
+Private Sub cboGouki_AfterUpdate()
+    If IsNull(Me.cboGouki) Then
+        Me.cboGouki = "全て"
+    Else
+        GoukeiDisp
+    End If
+End Sub
+
+'フォームを開く時
+Private Sub Form_Open(Cancel As Integer)
+    Dim strSQL As String
+    
+    Me.f_Mainのサブフォーム1.Form.品番.ColumnWidth = 567 * 5.5
+    Me.f_Mainのサブフォーム1.Form.品名.ColumnWidth = 567 * 5
+    Me.f_Mainのサブフォーム1.Form.客先.ColumnWidth = 567 * 4
+    
+    strSQL = "SELECT 品番, 品名, 客先 "
+    strSQL = strSQL & "FROM t_現品票検索用 "
+    strSQL = strSQL & "WHERE 品番 = 'ZZZZZZ';"
+    Me.f_Mainのサブフォーム1.Form.RecordSource = strSQL
+    
+    strSQL = "SELECT t_不具合情報.ID, t_不具合情報.生産ロットID, t_不具合情報.品番, t_不具合情報.指示日, t_不具合情報.号機, "
+    strSQL = strSQL & "t_不具合情報.検査者1, t_不具合情報.検査者2, t_不具合情報.検査者3, t_不具合情報.検査者4, t_不具合情報.検査者5, "
+    strSQL = strSQL & "t_不具合情報.時間, t_不具合情報.数量, t_不具合情報.総不具合数, t_不具合情報.不良率, t_不具合情報.外観キズ, t_不具合情報.圧痕, "
+    strSQL = strSQL & "t_不具合情報.切粉, t_不具合情報.毟れ, t_不具合情報.穴大, t_不具合情報.穴小, t_不具合情報.穴キズ, t_不具合情報.バリ, t_不具合情報.短寸, "
+    strSQL = strSQL & "t_不具合情報.面粗, t_不具合情報.サビ, t_不具合情報.ボケ, t_不具合情報.挽目, t_不具合情報.汚れ, t_不具合情報.メッキ, t_不具合情報.落下, "
+    strSQL = strSQL & "t_不具合情報.フクレ, t_不具合情報.ツブレ, t_不具合情報.ボッチ, t_不具合情報.段差, t_不具合情報.バレル石, t_不具合情報.径プラス, "
+    strSQL = strSQL & "t_不具合情報.径マイナス, t_不具合情報.ゲージ, t_不具合情報.異物混入, t_不具合情報.形状不良, t_不具合情報.こすれ, t_不具合情報.変色シミ, "
+    strSQL = strSQL & "t_不具合情報.材料キズ, t_不具合情報.ゴミ, t_不具合情報.その他, t_不具合情報.その他内容, t_数値検査員マスタ.検査員名 AS 数値検査員  "
+    strSQL = strSQL & "FROM (t_不具合情報 LEFT JOIN t_数値検査記録 ON t_不具合情報.生産ロットID = t_数値検査記録.生産ロットID) "
+    strSQL = strSQL & "LEFT JOIN t_数値検査員マスタ ON t_数値検査記録.検査員ID = t_数値検査員マスタ.検査員ID WHERE 品番 = 'ZZZZZZ';"
+    Me.f_mainのサブフォーム2.Form.RecordSource = strSQL
+    Me.f_mainのサブフォーム2.Form.号機.ColumnWidth = 567 * 1.5
+    Me.f_mainのサブフォーム2.Form.品番.ColumnHidden = True
+        
+    Me.txtDateFrom = Format(DateAdd("yyyy", -3, Now()), "yyyy/mm/dd")
+    Me.txtDateTo = Format(Now(), "yyyy/mm/dd")
+    
+End Sub
+
+'品番が更新された
+Private Sub txtHinban_AfterUpdate()
+    Dim strSQL As String
+    
+    '品番が消されたら画面初期化
+    If IsNull(Me.txtHinban) Then
+        ClearDisp
+        strSQL = "SELECT 品番, 品名, 客先 FROM t_現品票検索用 WHERE 品番 = 'ZZZZZZ';"
+        Me.f_Mainのサブフォーム1.Form.RecordSource = strSQL
+        Me.btnKensaku.SetFocus
+        Me.txtHinban.SetFocus
+    End If
+        
+End Sub
+
+'画面消去
+Public Sub ClearDisp()
+    Dim strSQL As String
+    
+    Me.txtHinmei = Null
+    Me.txtKyaku = Null
+    Me.txtSuuryo = Null
+    Me.txtHuguaisuu = Null
+    Me.txtHuryouritu = Null
+    Me.txtKizu = Null
+    Me.txtAkkon = Null
+    Me.txtKiriko = Null
+    Me.txtMusire = Null
+    Me.txtAnadai = Null
+    Me.txtAnashou = Null
+    Me.txtAnakizu = Null
+    Me.txtBari = Null
+    Me.txtTansun = Null
+    Me.txtMenso = Null
+    Me.txtSabi = Null
+    Me.txtBoke = Null
+    Me.txtHikime = Null
+    Me.txtYogore = Null
+    Me.txtMekki = Null
+    Me.txtRakka = Null
+    Me.txtHukure = Null
+    Me.txtTubure = Null
+    Me.txtBotti = Null
+    Me.txtDansa = Null
+    Me.txtBareru = Null
+    Me.txtKeiPlus = Null
+    Me.txtKeiMinus = Null
+    Me.txtGeiji = Null
+    Me.txtIbutu = Null
+    Me.txtKeijou = Null
+    Me.txtKosure = Null
+    Me.txtHenshoku = Null
+    Me.txtZairyo = Null
+    Me.txtGomi = Null
+    Me.txtSonota = Null
+    
+    strSQL = "SELECT * FROM t_不具合情報 "
+    strSQL = strSQL & "WHERE 品番 = 'ZZZZZZ' "
+    Me.f_mainのサブフォーム2.Form.RecordSource = strSQL
+    
+    Me.cboGouki.RowSource = "全て"      '号機選択の初期化
+    Me.cboGouki = "全て"
+
+    Me.Refresh
+    
+End Sub
+
+'合計表示
+Public Sub GoukeiDisp()
+    Dim cnn As ADODB.Connection
+    Dim rst As ADODB.Recordset
+    Dim strSQL As String
+
+    Set cnn = CurrentProject.Connection
+    Set rst = New ADODB.Recordset
+    
+    strSQL = "SELECT 品番, Sum(数量) AS 数量合計, Sum(総不具合数) AS 総不具合数合計, "
+    strSQL = strSQL & "Sum(外観キズ) AS 合計1, Sum(圧痕) AS 合計2, Sum(切粉) AS 合計3, "
+    strSQL = strSQL & "Sum(毟れ) AS 合計4, Sum(穴大) AS 合計5, Sum(穴小) AS 合計6, "
+    strSQL = strSQL & "Sum(穴キズ) AS 合計7, Sum(バリ) AS 合計8, Sum(短寸) AS 合計9, "
+    strSQL = strSQL & "Sum(面粗) AS 合計10, Sum(サビ) AS 合計11, Sum(ボケ) AS 合計12, "
+    strSQL = strSQL & "Sum(挽目) AS 合計13, Sum(汚れ) AS 合計14, Sum(メッキ) AS 合計15, "
+    strSQL = strSQL & "Sum(落下) AS 合計16, Sum(フクレ) AS 合計17, Sum(ツブレ) AS 合計18, "
+    strSQL = strSQL & "Sum(ボッチ) AS 合計19, Sum(段差) AS 合計20, Sum(バレル石) AS 合計21, "
+    strSQL = strSQL & "Sum(径プラス) AS 合計22, Sum(径マイナス) AS 合計23, Sum(ゲージ) AS 合計24, "
+    strSQL = strSQL & "Sum(異物混入) AS 合計25, Sum(形状不良) AS 合計26, Sum(こすれ) AS 合計27, "
+    strSQL = strSQL & "Sum(変色シミ) AS 合計28, Sum(材料キズ) AS 合計29, Sum(ゴミ) AS 合計30, "
+    strSQL = strSQL & "Sum(その他) AS 合計31 "
+    strSQL = strSQL & "FROM t_不具合情報 "
+    strSQL = strSQL & "WHERE 指示日 BETWEEN #" & Me.txtDateFrom & "# "
+    strSQL = strSQL & "AND #" & Me.txtDateTo & "# "
+    If Me.cboGouki <> "全て" Then
+        strSQL = strSQL & "AND 号機 = '" & Me.cboGouki & "' "
+    End If
+    strSQL = strSQL & "GROUP BY 品番 "
+    strSQL = strSQL & "HAVING 品番 = '" & Me.txtHinban & "';"
+    rst.Open strSQL, cnn, adOpenKeyset, adLockPessimistic
+    
+    If rst.RecordCount > 0 Then
+        With rst
+            Me.txtSuuryo = .Fields("数量合計")
+            Me.txtHuguaisuu = .Fields("総不具合数合計")
+            If rst.Fields("数量合計") > 0 Then
+                Me.txtHuryouritu = .Fields("総不具合数合計") / .Fields("数量合計")
+            Else
+                 Me.txtHuryouritu = Null
+            End If
+            If .Fields("合計1") > 0 Then Me.txtKizu = .Fields("合計1") Else Me.txtKizu = Null
+            If .Fields("合計2") > 0 Then Me.txtAkkon = .Fields("合計2") Else Me.txtAkkon = Null
+            If .Fields("合計3") > 0 Then Me.txtKiriko = .Fields("合計3") Else Me.txtKiriko = Null
+            If .Fields("合計4") > 0 Then Me.txtMusire = .Fields("合計4") Else Me.txtMusire = Null
+            If .Fields("合計5") > 0 Then Me.txtAnadai = .Fields("合計5") Else Me.txtAnadai = Null
+            If .Fields("合計6") > 0 Then Me.txtAnashou = .Fields("合計6") Else Me.txtAnashou = Null
+            If .Fields("合計7") > 0 Then Me.txtAnakizu = .Fields("合計7") Else Me.txtAnakizu = Null
+            If .Fields("合計8") > 0 Then Me.txtBari = .Fields("合計8") Else Me.txtBari = Null
+            If .Fields("合計9") > 0 Then Me.txtTansun = .Fields("合計9") Else Me.txtTansun = Null
+            If .Fields("合計10") > 0 Then Me.txtMenso = .Fields("合計10") Else Me.txtMenso = Null
+            If .Fields("合計11") > 0 Then Me.txtSabi = .Fields("合計11") Else Me.txtSabi = Null
+            If .Fields("合計12") > 0 Then Me.txtBoke = .Fields("合計12") Else Me.txtBoke = Null
+            If .Fields("合計13") > 0 Then Me.txtHikime = .Fields("合計13") Else Me.txtHikime = Null
+            If .Fields("合計14") > 0 Then Me.txtYogore = .Fields("合計14") Else Me.txtYogore = Null
+            If .Fields("合計15") > 0 Then Me.txtMekki = .Fields("合計15") Else Me.txtMekki = Null
+            If .Fields("合計16") > 0 Then Me.txtRakka = .Fields("合計16") Else Me.txtRakka = Null
+            If .Fields("合計17") > 0 Then Me.txtHukure = .Fields("合計17") Else Me.txtHukure = Null
+            If .Fields("合計18") > 0 Then Me.txtTubure = .Fields("合計18") Else Me.txtTubure = Null
+            If .Fields("合計19") > 0 Then Me.txtBotti = .Fields("合計19") Else Me.txtBotti = Null
+            If .Fields("合計20") > 0 Then Me.txtDansa = .Fields("合計20") Else Me.txtDansa = Null
+            If .Fields("合計21") > 0 Then Me.txtBareru = .Fields("合計21") Else Me.txtBareru = Null
+            If .Fields("合計22") > 0 Then Me.txtKeiPlus = .Fields("合計22") Else Me.txtKeiPlus = Null
+            If .Fields("合計23") > 0 Then Me.txtKeiMinus = .Fields("合計23") Else Me.txtKeiMinus = Null
+            If .Fields("合計24") > 0 Then Me.txtGeiji = .Fields("合計24") Else Me.txtGeiji = Null
+            If .Fields("合計25") > 0 Then Me.txtIbutu = .Fields("合計25") Else Me.txtIbutu = Null
+            If .Fields("合計26") > 0 Then Me.txtKeijou = .Fields("合計26") Else Me.txtKeijou = Null
+            If .Fields("合計27") > 0 Then Me.txtKosure = .Fields("合計27") Else Me.txtKosure = Null
+            If .Fields("合計28") > 0 Then Me.txtHenshoku = .Fields("合計28") Else Me.txtHenshoku = Null
+            If .Fields("合計29") > 0 Then Me.txtZairyo = .Fields("合計29") Else Me.txtZairyo = Null
+            If .Fields("合計30") > 0 Then Me.txtGomi = .Fields("合計30") Else Me.txtGomi = Null
+            If .Fields("合計31") > 0 Then Me.txtSonota = .Fields("合計31") Else Me.txtSonota = Null
+        End With
+        
+        strSQL = "SELECT t_不具合情報.ID, t_不具合情報.生産ロットID, t_不具合情報.品番, t_不具合情報.指示日, t_不具合情報.号機, "
+        strSQL = strSQL & "t_不具合情報.検査者1, t_不具合情報.検査者2, t_不具合情報.検査者3, t_不具合情報.検査者4, t_不具合情報.検査者5, "
+        strSQL = strSQL & "t_不具合情報.時間, t_不具合情報.数量, t_不具合情報.総不具合数, t_不具合情報.不良率, t_不具合情報.外観キズ, t_不具合情報.圧痕, "
+        strSQL = strSQL & "t_不具合情報.切粉, t_不具合情報.毟れ, t_不具合情報.穴大, t_不具合情報.穴小, t_不具合情報.穴キズ, t_不具合情報.バリ, t_不具合情報.短寸, "
+        strSQL = strSQL & "t_不具合情報.面粗, t_不具合情報.サビ, t_不具合情報.ボケ, t_不具合情報.挽目, t_不具合情報.汚れ, t_不具合情報.メッキ, t_不具合情報.落下, "
+        strSQL = strSQL & "t_不具合情報.フクレ, t_不具合情報.ツブレ, t_不具合情報.ボッチ, t_不具合情報.段差, t_不具合情報.バレル石, t_不具合情報.径プラス, "
+        strSQL = strSQL & "t_不具合情報.径マイナス, t_不具合情報.ゲージ, t_不具合情報.異物混入, t_不具合情報.形状不良, t_不具合情報.こすれ, t_不具合情報.変色シミ, "
+        strSQL = strSQL & "t_不具合情報.材料キズ, t_不具合情報.ゴミ, t_不具合情報.その他, t_不具合情報.その他内容, t_数値検査員マスタ.検査員名 AS 数値検査員 "
+        strSQL = strSQL & "FROM (t_不具合情報 LEFT JOIN t_数値検査記録 ON t_不具合情報.生産ロットID = t_数値検査記録.生産ロットID) "
+        strSQL = strSQL & "LEFT JOIN t_数値検査員マスタ ON t_数値検査記録.検査員ID = t_数値検査員マスタ.検査員ID "
+        strSQL = strSQL & "WHERE 品番 = '" & Me.txtHinban & "' "
+        strSQL = strSQL & "AND 指示日 BETWEEN #" & Me.txtDateFrom & "# "
+        strSQL = strSQL & "AND #" & Me.txtDateTo & "# "
+        If Me.cboGouki <> "全て" Then
+            strSQL = strSQL & "AND 号機 = '" & Me.cboGouki & "' "
+        End If
+        strSQL = strSQL & "ORDER BY 指示日 DESC;"
+        
+        Me.f_mainのサブフォーム2.Form.RecordSource = strSQL
+        
+        SetComboList
+    Else
+        ClearDisp           '画面消去
+        MsgBox "指定された期間に指定された品番の記録はありません", vbInformation + vbOKOnly, "確認"
+    End If
+
+    rst.Close
+    Set rst = Nothing
+    Set cnn = Nothing
+
+End Sub
+
+'コンボボックスの値設定
+Private Sub SetComboList()
+    Dim cnn As ADODB.Connection
+    Dim rst As ADODB.Recordset
+    Dim strSQL As String
+    Dim sList As String
+
+    Set cnn = CurrentProject.Connection
+    Set rst = New ADODB.Recordset
+    
+    strSQL = "SELECT DISTINCT 号機 FROM t_不具合情報 "
+    strSQL = strSQL & "WHERE t_不具合情報.品番 = '" & Me.txtHinban & "' "
+    strSQL = strSQL & "AND t_不具合情報.指示日 BETWEEN #" & Me.txtDateFrom & "# "
+    strSQL = strSQL & "AND #" & Me.txtDateTo & "#;"
+    rst.Open strSQL, cnn, adOpenKeyset, adLockPessimistic
+    
+    sList = "全て"
+    If rst.RecordCount > 1 Then     '号機が2台以上ある場合
+        With rst
+            .MoveFirst
+            Do While Not .EOF()
+                sList = sList & ";" & .Fields("号機")
+                .MoveNext
+            Loop
+        End With
+    End If
+    Me.cboGouki.RowSource = sList
+
+    rst.Close
+    Set rst = Nothing
+    Set cnn = Nothing
+    
+    Me.txtHinban.SetFocus
+End Sub
+
+'開始日が更新された
+Private Sub txtKaisibi_AfterUpdate()
+    Me.txtShuuryoubi.SetFocus
+End Sub
+
+'終了日が更新された
+Private Sub txtShuuryoubi_AfterUpdate()
+    Me.btnExportAll.SetFocus
+End Sub
+
+
+Option Compare Database
+Option Explicit
+
+'品番がクリックされた
+Private Sub 品番_Click()
+    If Not IsNull(Me.品番) Then
+        Forms("f_Main").ClearDisp
+        Forms("f_Main").txtHinban = Me.品番
+        Forms("f_Main").GoukeiDisp              '合計表示
+    End If
+End Sub

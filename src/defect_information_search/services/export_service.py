@@ -1,49 +1,83 @@
 from __future__ import annotations
 
+from collections.abc import Iterable, Sequence
 from pathlib import Path
 
 import pandas as pd
-from openpyxl import load_workbook
+from openpyxl import Workbook
+from openpyxl.cell import WriteOnlyCell
 from openpyxl.styles import PatternFill
+from openpyxl.utils import get_column_letter
 
 
 class ExportService:
+    def __init__(self) -> None:
+        self._aggregate_green_fill = PatternFill(fill_type="solid", fgColor="DAF2D0")
+        self._aggregate_orange_fill = PatternFill(fill_type="solid", fgColor="FBE2D5")
+
     def export_dataframe(
         self,
         dataframe: pd.DataFrame,
         target_path: Path,
         formatter: str | None = None,
-    ) -> None:
-        dataframe.to_excel(target_path, index=False)
-        if formatter == "aggregate":
-            self._format_aggregate_sheet(target_path)
-        elif formatter == "disposal":
-            self._autofit(target_path)
+    ) -> int:
+        rows = dataframe.itertuples(index=False, name=None)
+        return self.export_rows(list(dataframe.columns), rows, target_path, formatter=formatter)
 
-    def _format_aggregate_sheet(self, path: Path) -> None:
-        workbook = load_workbook(path)
-        sheet = workbook.active
-        sheet.auto_filter.ref = sheet.dimensions
+    def export_rows(
+        self,
+        columns: Sequence[str],
+        rows: Iterable[Sequence[object]],
+        target_path: Path,
+        formatter: str | None = None,
+    ) -> int:
+        workbook = Workbook(write_only=True)
+        sheet = workbook.create_sheet(title="Sheet1")
+        self._apply_sheet_layout(sheet, formatter)
+
+        widths = [len(str(column)) + 2 for column in columns]
+        sheet.append(list(columns))
+
+        row_count = 0
+        for row in rows:
+            values = list(row)
+            row_count += 1
+            for index, value in enumerate(values):
+                widths[index] = max(widths[index], min(len(str(value or "")) + 2, 40))
+            sheet.append(self._render_row(sheet, values, formatter))
+
+        self._apply_widths(sheet, widths)
+        if row_count > 0:
+            sheet.auto_filter.ref = f"A1:{get_column_letter(len(columns))}{row_count + 1}"
+        workbook.save(target_path)
+        return row_count
+
+    def _apply_sheet_layout(self, sheet, formatter: str | None) -> None:  # type: ignore[no-untyped-def]
         sheet.freeze_panes = "A2"
-        for column_letter in ["E", "F", "G", "H", "I"]:
-            sheet.column_dimensions[column_letter].hidden = True
-        green_fill = PatternFill(fill_type="solid", fgColor="DAF2D0")
-        orange_fill = PatternFill(fill_type="solid", fgColor="FBE2D5")
-        for cell in sheet["O"]:
-            cell.fill = green_fill
-        for cell in sheet["P"]:
-            cell.fill = orange_fill
-        for cell in sheet["S"]:
-            cell.number_format = "0.00%"
-        self._autofit_sheet(sheet)
-        workbook.save(path)
+        if formatter == "aggregate":
+            for column_letter in ["E", "F", "G", "H", "I"]:
+                sheet.column_dimensions[column_letter].hidden = True
 
-    def _autofit(self, path: Path) -> None:
-        workbook = load_workbook(path)
-        self._autofit_sheet(workbook.active)
-        workbook.save(path)
+    def _render_row(self, sheet, values: list[object], formatter: str | None) -> list[object]:  # type: ignore[no-untyped-def]
+        if formatter != "aggregate":
+            return values
 
-    def _autofit_sheet(self, sheet) -> None:
-        for column_cells in sheet.columns:
-            length = max(len(str(cell.value or "")) for cell in column_cells)
-            sheet.column_dimensions[column_cells[0].column_letter].width = min(length + 3, 40)
+        rendered: list[object] = []
+        for index, value in enumerate(values):
+            if index not in {14, 15, 18}:
+                rendered.append(value)
+                continue
+
+            cell = WriteOnlyCell(sheet, value=value)
+            if index == 14:
+                cell.fill = self._aggregate_green_fill
+            elif index == 15:
+                cell.fill = self._aggregate_orange_fill
+            elif index == 18:
+                cell.number_format = "0.00%"
+            rendered.append(cell)
+        return rendered
+
+    def _apply_widths(self, sheet, widths: Sequence[int]) -> None:  # type: ignore[no-untyped-def]
+        for index, width in enumerate(widths, start=1):
+            sheet.column_dimensions[get_column_letter(index)].width = min(width, 40)

@@ -17,7 +17,7 @@ defect_information_search/
       ├─ config.py                 # .env 読み込み
       ├─ models.py                 # 画面共通定義
       ├─ infrastructure/
-      │  └─ access_gateway.py      # OLE DB 経由の Access 参照層
+      │  └─ access_gateway.py      # pyodbc 経由の Access 参照層
       ├─ services/
       │  ├─ defect_service.py      # 検索・集計・出力用データ取得
       │  └─ export_service.py      # Excel 保存と書式設定
@@ -67,8 +67,8 @@ ACCESS_DB_PATH=C:\Users\<USER>\Desktop\不具合情報検索.accdb
 ## 実装方針
 
 - `.env` では親 DB の `不具合情報検索.accdb` のみを指定します。
-- Python からは `OLE DB` 直結ではなく、Access の COM/DAO を PowerShell 経由で呼び出して親 DB を開きます。
-- これにより、親 DB 内のリンクテーブルは Access 側で解決させます。
+- Python からは `pyodbc` で親 DB を参照します。
+- リンクテーブルは親 DB 側の定義をそのまま使います。
 - 既存 VBA の SQL を踏襲し、以下を実装しています。
   - 品番検索
   - 品番別の不具合集計

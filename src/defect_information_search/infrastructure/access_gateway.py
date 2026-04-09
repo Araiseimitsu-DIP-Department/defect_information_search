@@ -1,160 +1,120 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import date, datetime
 from pathlib import Path
 from typing import Any, Iterable
 
-import pythoncom
-import pywintypes
-import win32com.client
+import pandas as pd
+import pyodbc
+
+
+pyodbc.pooling = True
 
 
 class AccessGatewayError(RuntimeError):
-    """Access/DAO 読み取りに失敗した場合の例外。"""
+    """Access ODBC 読み取りに失敗した場合の例外。"""
 
 
 @dataclass
-class _OpenedDatabase:
-    db: Any
-    mode: str
-    app: Any | None = None
-
-
 class AccessSession:
+    connection: pyodbc.Connection
+
+    def fetch_dataframe(self, sql: str, params: Iterable[Any] | None = None) -> pd.DataFrame:
+        cursor = self.connection.cursor()
+        cursor.arraysize = 10000
+        cursor.execute(sql, tuple(params or ()))
+        rows = cursor.fetchall()
+        columns = [column[0] for column in cursor.description] if cursor.description else []
+        if not rows:
+            return pd.DataFrame(columns=columns)
+        return pd.DataFrame.from_records(rows, columns=columns)
+
+
+@dataclass
+class RowStream:
+    cursor: pyodbc.Cursor
+    columns: list[str]
+
+    def __iter__(self):
+        while True:
+            rows = self.cursor.fetchmany(self.cursor.arraysize)
+            if not rows:
+                return
+            for row in rows:
+                yield row
+
+
+class _SessionContext:
     def __init__(self, gateway: AccessGateway) -> None:  # type: ignore[name-defined]
         self._gateway = gateway
-        self._opened: _OpenedDatabase | None = None
+        self._connection: pyodbc.Connection | None = None
 
     def __enter__(self) -> AccessSession:
-        pythoncom.CoInitialize()
-        self._opened = self._gateway._open_database()
-        return self
+        self._connection = self._gateway._connect()
+        return AccessSession(self._connection)
 
     def __exit__(self, exc_type, exc, tb) -> None:  # type: ignore[no-untyped-def]
-        if self._opened is not None:
-            self._gateway._close_database(self._opened)
-            self._opened = None
-        pythoncom.CoUninitialize()
-
-    def fetch_all(self, sql: str, params: Iterable[Any] | None = None) -> list[dict[str, Any]]:
-        if self._opened is None:
-            raise AccessGatewayError("Access セッションが開始されていません。")
-        rendered_sql = self._gateway._render_sql(sql, params or [])
-        return self._gateway._fetch_all_from_db(self._opened.db, rendered_sql)
-
-    def fetch_one(self, sql: str, params: Iterable[Any] | None = None) -> dict[str, Any] | None:
-        rows = self.fetch_all(sql, params)
-        return rows[0] if rows else None
+        if self._connection is not None:
+            self._connection.close()
+            self._connection = None
 
 
 class AccessGateway:
     def __init__(self, access_db_path: Path) -> None:
         self.access_db_path = access_db_path
-        self._normalized_db_path = self._normalize_path(access_db_path)
+        self._connection_string = self._build_connection_string(access_db_path)
 
-    def session(self) -> AccessSession:
-        return AccessSession(self)
+    def session(self) -> _SessionContext:
+        return _SessionContext(self)
 
-    def fetch_all(self, sql: str, params: Iterable[Any] | None = None) -> list[dict[str, Any]]:
+    def fetch_dataframe(self, sql: str, params: Iterable[Any] | None = None) -> pd.DataFrame:
         with self.session() as session:
-            return session.fetch_all(sql, params)
+            return session.fetch_dataframe(sql, params)
 
-    def fetch_one(self, sql: str, params: Iterable[Any] | None = None) -> dict[str, Any] | None:
-        with self.session() as session:
-            return session.fetch_one(sql, params)
+    def stream_rows(self, sql: str, params: Iterable[Any] | None = None) -> _RowStreamContext:
+        return _RowStreamContext(self, sql, params)
 
-    def _open_database(self) -> _OpenedDatabase:
-        errors: list[str] = []
-        for opener in (self._open_via_active_access, self._open_via_dao, self._open_via_new_access_app):
-            try:
-                return opener()
-            except Exception as exc:
-                errors.append(f"{opener.__name__}: {exc}")
-        raise AccessGatewayError("\n".join(errors))
-
-    def _close_database(self, opened: _OpenedDatabase) -> None:
-        if opened.mode == "dao":
-            try:
-                opened.db.Close()
-            except Exception:
-                pass
-            return
-
-        if opened.mode == "new_access" and opened.app is not None:
-            try:
-                opened.app.CloseCurrentDatabase()
-            except Exception:
-                pass
-            try:
-                opened.app.Quit()
-            except Exception:
-                pass
-
-    def _open_via_active_access(self) -> _OpenedDatabase:
-        app = win32com.client.GetActiveObject("Access.Application")
-        current_path = getattr(app.CurrentProject, "FullName", "")
-        if self._normalize_path(Path(str(current_path))) != self._normalized_db_path:
-            raise AccessGatewayError("起動中の Access が対象 DB を開いていません。")
-        return _OpenedDatabase(db=app.CurrentDb(), mode="active", app=app)
-
-    def _open_via_dao(self) -> _OpenedDatabase:
-        dao = win32com.client.Dispatch("DAO.DBEngine.120")
-        db = dao.OpenDatabase(str(self.access_db_path), False, True)
-        return _OpenedDatabase(db=db, mode="dao")
-
-    def _open_via_new_access_app(self) -> _OpenedDatabase:
-        app = win32com.client.Dispatch("Access.Application")
-        app.Visible = False
-        app.OpenCurrentDatabase(str(self.access_db_path), False)
-        return _OpenedDatabase(db=app.CurrentDb(), mode="new_access", app=app)
-
-    def _fetch_all_from_db(self, db: Any, sql: str) -> list[dict[str, Any]]:
-        recordset = None
+    def _connect(self) -> pyodbc.Connection:
         try:
-            recordset = db.OpenRecordset(sql)
-            return self._recordset_to_rows(recordset)
-        finally:
-            if recordset is not None:
-                try:
-                    recordset.Close()
-                except Exception:
-                    pass
+            return pyodbc.connect(
+                self._connection_string,
+                autocommit=True,
+                timeout=60,
+            )
+        except pyodbc.Error as exc:
+            raise AccessGatewayError(str(exc)) from exc
 
-    def _render_sql(self, sql: str, params: Iterable[Any]) -> str:
-        rendered = sql
-        for value in params:
-            rendered = rendered.replace("?", self._to_access_literal(value), 1)
-        return rendered
+    def _build_connection_string(self, access_db_path: Path) -> str:
+        db_path = str(access_db_path)
+        return (
+            "DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};"
+            f"DBQ={db_path};"
+            "ExtendedAnsiSQL=1;"
+            "Exclusive=0;"
+            "ReadOnly=1;"
+        )
 
-    def _to_access_literal(self, value: Any) -> str:
-        if value is None:
-            return "Null"
-        if isinstance(value, bool):
-            return "True" if value else "False"
-        if isinstance(value, (int, float)):
-            return str(value)
-        if isinstance(value, datetime):
-            return f"#{value.strftime('%Y-%m-%d %H:%M:%S')}#"
-        if isinstance(value, date):
-            return f"#{value.strftime('%Y-%m-%d')}#"
-        text = str(value).replace("'", "''")
-        return f"'{text}'"
 
-    def _recordset_to_rows(self, recordset: Any) -> list[dict[str, Any]]:
-        rows: list[dict[str, Any]] = []
-        while not recordset.EOF:
-            row: dict[str, Any] = {}
-            for index in range(recordset.Fields.Count):
-                field = recordset.Fields(index)
-                value = field.Value
-                if isinstance(value, pywintypes.TimeType):
-                    row[field.Name] = value.Format("%Y-%m-%dT%H:%M:%S")
-                else:
-                    row[field.Name] = value
-            rows.append(row)
-            recordset.MoveNext()
-        return rows
+class _RowStreamContext:
+    def __init__(self, gateway: AccessGateway, sql: str, params: Iterable[object] | None) -> None:
+        self._gateway = gateway
+        self._sql = sql
+        self._params = tuple(params or ())
+        self._connection: pyodbc.Connection | None = None
+        self._cursor: pyodbc.Cursor | None = None
 
-    def _normalize_path(self, path: Path) -> str:
-        return str(path).replace("/", "\\").rstrip("\\").casefold()
+    def __enter__(self) -> RowStream:
+        self._connection = self._gateway._connect()
+        self._cursor = self._connection.cursor()
+        self._cursor.arraysize = 10000
+        self._cursor.execute(self._sql, self._params)
+        columns = [column[0] for column in self._cursor.description] if self._cursor.description else []
+        return RowStream(self._cursor, columns)
+
+    def __exit__(self, exc_type, exc, tb) -> None:  # type: ignore[no-untyped-def]
+        if self._cursor is not None:
+            self._cursor.close()
+            self._cursor = None
+        if self._connection is not None:
+            self._connection.close()
+            self._connection = None

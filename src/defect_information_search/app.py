@@ -35,5 +35,5 @@ def main() -> int:
     window = MainWindow(service, export_service)
     if icon_path.exists():
         window.setWindowIcon(QIcon(str(icon_path)))
-    window.show()
+    window.showMaximized()
     return app.exec()

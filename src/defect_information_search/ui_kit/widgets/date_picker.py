@@ -169,7 +169,7 @@ class DatePickerField(QWidget):
         super().__init__(parent)
         self._date = QDate.currentDate()
         self._popup_alignment = popup_alignment
-        self.setFixedHeight(32)
+        self.setFixedHeight(38)
         self._container: QFrame | None = None
         self._build_ui()
         self._update_display()
@@ -190,7 +190,7 @@ class DatePickerField(QWidget):
 
     def _build_ui(self) -> None:
         layout = QHBoxLayout(self)
-        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setContentsMargins(0, 1, 0, 1)
         layout.setSpacing(0)
 
         container = QFrame()
@@ -207,6 +207,7 @@ class DatePickerField(QWidget):
         self._display.setReadOnly(True)
         self._display.setCursorPosition(0)
         self._display.setCursor(Qt.PointingHandCursor)
+        self._display.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         self._display.clicked.connect(self._open_picker)
         self.setFocusProxy(self._display)
 

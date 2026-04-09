@@ -3,7 +3,12 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-from defect_information_search.config import APP_NAME, AppConfig
+from defect_information_search.config import (
+    APP_ICON_RUNTIME_FILENAME,
+    APP_ICON_SOURCE_FILENAME,
+    APP_NAME,
+    AppConfig,
+)
 from defect_information_search.infrastructure.access_gateway import AccessGateway
 from defect_information_search.services.defect_service import DefectService
 from defect_information_search.services.export_service import ExportService
@@ -30,7 +35,11 @@ def main() -> int:
     config_dir = _runtime_config_dir()
     app = QApplication(sys.argv)
     app.setApplicationName(APP_NAME)
-    icon_path = bundle_dir / "docs" / "icon.png"
+    # 配布版は PyInstaller が docs/window_icon.png を同梱。開発時は docs 直下の元画像を参照する。
+    if getattr(sys, "frozen", False):
+        icon_path = bundle_dir / "docs" / APP_ICON_RUNTIME_FILENAME
+    else:
+        icon_path = bundle_dir / "docs" / APP_ICON_SOURCE_FILENAME
     if icon_path.exists():
         app.setWindowIcon(QIcon(str(icon_path)))
     app.setStyle("Fusion")

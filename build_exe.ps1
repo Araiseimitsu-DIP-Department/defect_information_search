@@ -31,7 +31,7 @@ $pyInstallerArgs = @(
     "--paths", "src",
     "--runtime-hook", "tools\\pyi_rth_fix_six.py",
     "--icon", "build\app_icon.ico",
-    "--add-data", "docs\icon.png;docs",
+    "--add-data", "build\window_icon.png;docs",
     "--add-data", "src\defect_information_search\ui_kit\assets;defect_information_search\ui_kit\assets",
     "main.py"
 )

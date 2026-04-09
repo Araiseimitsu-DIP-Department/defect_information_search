@@ -9,6 +9,10 @@ from dotenv import load_dotenv
 
 
 APP_NAME = "不具合情報検索"
+# アイコン元画像（docs 配下）。ビルド時に ICO / 同梱用 PNG を生成する。
+APP_ICON_SOURCE_FILENAME = "工業検査とエラー検出アイコン.png"
+# PyInstaller 同梱・実行時読込用（ASCII 名。prepare_icon が build に出力する）
+APP_ICON_RUNTIME_FILENAME = "window_icon.png"
 
 
 @dataclass(frozen=True)

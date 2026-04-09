@@ -29,10 +29,19 @@ $pyInstallerArgs = @(
     "--windowed",
     "--name", $AppName,
     "--paths", "src",
+    "--runtime-hook", "tools\\pyi_rth_fix_six.py",
     "--icon", "build\app_icon.ico",
     "--add-data", "docs\icon.png;docs",
     "--add-data", "src\defect_information_search\ui_kit\assets;defect_information_search\ui_kit\assets",
     "main.py"
 )
 
+if (Test-Path ".\.env") {
+    $pyInstallerArgs += @("--add-data", ".env;.")
+}
+
 & $PythonExe @pyInstallerArgs
+
+if (Test-Path ".\$AppName.spec") {
+    Remove-Item ".\$AppName.spec" -Force
+}

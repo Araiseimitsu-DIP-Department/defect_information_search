@@ -13,18 +13,31 @@ from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication, QMessageBox
 
 
+def _runtime_bundle_dir() -> Path:
+    if getattr(sys, "frozen", False):
+        return Path(getattr(sys, "_MEIPASS", Path(sys.executable).resolve().parent))
+    return Path(__file__).resolve().parents[2]
+
+
+def _runtime_config_dir() -> Path:
+    if getattr(sys, "frozen", False):
+        return Path(sys.executable).resolve().parent
+    return Path(__file__).resolve().parents[2]
+
+
 def main() -> int:
-    root_dir = Path(__file__).resolve().parents[2]
+    bundle_dir = _runtime_bundle_dir()
+    config_dir = _runtime_config_dir()
     app = QApplication(sys.argv)
     app.setApplicationName(APP_NAME)
-    icon_path = root_dir / "docs" / "icon.png"
+    icon_path = bundle_dir / "docs" / "icon.png"
     if icon_path.exists():
         app.setWindowIcon(QIcon(str(icon_path)))
     app.setStyle("Fusion")
     app.setPalette(build_light_palette())
     app.setStyleSheet(APP_STYLESHEET)
     try:
-        config = AppConfig.load(root_dir)
+        config = AppConfig.load(config_dir, extra_dirs=[bundle_dir])
     except Exception as exc:
         QMessageBox.critical(None, "設定エラー", str(exc))
         return 1

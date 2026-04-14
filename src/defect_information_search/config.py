@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 
 
 APP_NAME = "不具合情報検索"
+APP_USER_MODEL_ID = "defect_information_search"
 # アイコン元画像（docs 配下）。ビルド時に ICO / 同梱用 PNG を生成する。
 APP_ICON_SOURCE_FILENAME = "工業検査とエラー検出アイコン.png"
 # PyInstaller 同梱・実行時読込用（ASCII 名。prepare_icon が build に出力する）
@@ -18,6 +19,8 @@ APP_ICON_RUNTIME_FILENAME = "window_icon.png"
 @dataclass(frozen=True)
 class AppConfig:
     access_db_path: Path
+    database_backend: str = "access"
+    postgres_dsn: str | None = None
 
     @classmethod
     def load(cls, base_dir: Path, extra_dirs: Iterable[Path] | None = None) -> "AppConfig":
@@ -35,7 +38,15 @@ class AppConfig:
                 "\n.exe と同じフォルダ、または 1 つ上のフォルダに .env を置くか、"
                 "環境変数 ACCESS_DB_PATH を設定してください。"
             )
-        return cls(access_db_path=Path(db_path))
+        database_backend = os.getenv("DATABASE_BACKEND", "access").strip().lower() or "access"
+        if database_backend not in {"access", "postgres"}:
+            raise ValueError("DATABASE_BACKEND は access か postgres を設定してください。")
+        postgres_dsn = os.getenv("POSTGRES_DSN", "").strip().strip('"') or None
+        return cls(
+            access_db_path=Path(db_path),
+            database_backend=database_backend,
+            postgres_dsn=postgres_dsn,
+        )
 
     @staticmethod
     def _candidate_env_paths(search_dirs: Iterable[Path]) -> list[Path]:

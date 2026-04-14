@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from datetime import date, datetime
 from pathlib import Path
 from typing import Callable
@@ -30,6 +31,7 @@ from PySide6.QtWidgets import (
 from defect_information_search.models import DEFECT_FIELDS
 from defect_information_search.services.defect_service import DefectService
 from defect_information_search.services.export_service import ExportService
+from defect_information_search.shared.errors import RepositoryError
 from defect_information_search.ui.table_models import DataFrameTableModel
 from defect_information_search.ui_kit.widgets.busy_indicator import run_with_busy
 from defect_information_search.ui_kit.widgets.date_picker import DatePickerField
@@ -43,6 +45,7 @@ from defect_information_search.ui_kit.widgets.message_box import (
 
 class MainWindow(QMainWindow):
     TOP_PANEL_HEIGHT = 228
+    _logger = logging.getLogger(__name__)
 
     def __init__(self, service: DefectService, export_service: ExportService) -> None:
         super().__init__()
@@ -476,6 +479,9 @@ class MainWindow(QMainWindow):
                 message="品番候補を取得しています。",
                 task=lambda: self.service.find_products(keyword),
             )
+        except RepositoryError as exc:
+            self._log_and_show_repository_error("品番検索", exc)
+            return
         except Exception as exc:
             self._show_error(str(exc))
             return
@@ -536,6 +542,9 @@ class MainWindow(QMainWindow):
                 message="Excel ファイルを作成しています。",
                 task=lambda: self.export_service.export_dataframe(self.current_details, path),
             )
+        except RepositoryError as exc:
+            self._log_and_show_repository_error("検索結果エクスポート", exc)
+            return
         except Exception as exc:
             self._show_error(str(exc))
             return
@@ -571,6 +580,9 @@ class MainWindow(QMainWindow):
                 message="Excel ファイルを作成しています。",
                 task=task,
             )
+        except RepositoryError as exc:
+            self._log_and_show_repository_error("不具合情報エクスポート", exc)
+            return
         except ValueError as exc:
             self._show_warning(str(exc))
             return
@@ -632,6 +644,9 @@ class MainWindow(QMainWindow):
                 message="Excel ファイルを作成しています。",
                 task=task,
             )
+        except RepositoryError as exc:
+            self._log_and_show_repository_error(title, exc)
+            return
         except ValueError as exc:
             self._show_warning(str(exc))
             return
@@ -658,6 +673,9 @@ class MainWindow(QMainWindow):
                 message="不具合情報を集計しています。",
                 task=lambda: self.service.load_search_result(part_number, start_date, end_date, None),
             )
+        except RepositoryError as exc:
+            self._log_and_show_repository_error("不具合情報検索", exc)
+            return
         except Exception as exc:
             self._show_error(str(exc))
             return
@@ -819,3 +837,7 @@ class MainWindow(QMainWindow):
 
     def _show_error(self, message: str) -> None:
         show_error(self, "エラー", message)
+
+    def _log_and_show_repository_error(self, action: str, exc: Exception) -> None:
+        self._logger.exception("%s failed", action, exc_info=exc)
+        self._show_error("データベース処理に失敗しました。接続状況を確認してください。")

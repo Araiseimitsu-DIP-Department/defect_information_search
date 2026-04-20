@@ -94,11 +94,63 @@ class AccessDefectRepository(DefectRepository):
 
     def find_defects_for_part(self, part_number: str, date_from: date, date_to: date) -> Sequence[DefectRecord]:
         sql = """
-            SELECT *
-            FROM [t_不具合情報]
-            WHERE [品番] = ?
-              AND [指示日] BETWEEN ? AND ?
-            ORDER BY [指示日] DESC, [ID] DESC
+            SELECT
+                t_不具合情報.[ID],
+                t_不具合情報.[生産ロットID],
+                t_不具合情報.[品番],
+                t_不具合情報.[指示日],
+                t_不具合情報.[号機],
+                t_不具合情報.[検査者1],
+                t_不具合情報.[検査者2],
+                t_不具合情報.[検査者3],
+                t_不具合情報.[検査者4],
+                t_不具合情報.[検査者5],
+                t_不具合情報.[時間],
+                t_不具合情報.[数量],
+                t_不具合情報.[総不具合数],
+                t_不具合情報.[不良率],
+                t_不具合情報.[外観キズ],
+                t_不具合情報.[圧痕],
+                t_不具合情報.[切粉],
+                t_不具合情報.[毟れ],
+                t_不具合情報.[穴大],
+                t_不具合情報.[穴小],
+                t_不具合情報.[穴キズ],
+                t_不具合情報.[バリ],
+                t_不具合情報.[短寸],
+                t_不具合情報.[面粗],
+                t_不具合情報.[サビ],
+                t_不具合情報.[ボケ],
+                t_不具合情報.[挽目],
+                t_不具合情報.[汚れ],
+                t_不具合情報.[メッキ],
+                t_不具合情報.[落下],
+                t_不具合情報.[フクレ],
+                t_不具合情報.[ツブレ],
+                t_不具合情報.[ボッチ],
+                t_不具合情報.[段差],
+                t_不具合情報.[バレル石],
+                t_不具合情報.[径プラス],
+                t_不具合情報.[径マイナス],
+                t_不具合情報.[ゲージ],
+                t_不具合情報.[異物混入],
+                t_不具合情報.[形状不良],
+                t_不具合情報.[こすれ],
+                t_不具合情報.[変色シミ],
+                t_不具合情報.[材料キズ],
+                t_不具合情報.[ゴミ],
+                t_不具合情報.[その他],
+                t_不具合情報.[その他内容],
+                t_数値検査員マスタ.[検査員名] AS [数値検査員]
+            FROM
+                (t_不具合情報
+                 LEFT JOIN t_数値検査記録
+                   ON t_不具合情報.[生産ロットID] = t_数値検査記録.[生産ロットID])
+                LEFT JOIN t_数値検査員マスタ
+                   ON t_数値検査記録.[検査員ID] = t_数値検査員マスタ.[検査員ID]
+            WHERE t_不具合情報.[品番] = ?
+              AND t_不具合情報.[指示日] BETWEEN ? AND ?
+            ORDER BY t_不具合情報.[指示日] DESC, t_不具合情報.[ID] DESC
         """
         frame = self._fetch_dataframe(sql, [part_number, date_from, date_to]).reset_index(drop=True)
         return defect_records_from_frame(frame)

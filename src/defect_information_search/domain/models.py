@@ -68,4 +68,4 @@ class DefectRecord:
     defect_rate: float | None = None
     defect_counts: dict[str, int] = field(default_factory=dict)
     other_content: str | None = None
-
+    numeric_inspector: str | None = None

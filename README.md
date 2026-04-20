@@ -1,86 +1,92 @@
-# defect_information_search
+# 不具合情報検索
 
-Access の既存運用 DB を参照し、検索・集計表示・Excel エクスポートを行う Windows デスクトップアプリです。起動ファイルは `main.py` です。
+不具合情報の検索、集計確認、Excel 出力を行う Windows 向けデスクトップアプリです。  
+画面は `pywebview` + `Edge WebView2` で構成し、業務ロジックは既存の service / repository 層をそのまま使っています。
 
-## フォルダ構成
+## 構成
 
 ```text
 defect_information_search/
-├─ main.py                         # アプリ起動エントリポイント
-├─ build_exe.ps1                   # onefile exe ビルドスクリプト
-├─ requirements.txt                # Python 依存関係
-├─ .env.example                    # 接続先設定例
-├─ docs/                           # 受領仕様書・画面イメージ・VBA
+├─ main.py
+├─ build_exe.ps1
+├─ requirements.txt
+├─ .env
+├─ docs/
+│  └─ 工業検査とエラー検出アイコン.png
 └─ src/
    └─ defect_information_search/
-      ├─ app.py                    # QApplication 初期化
-      ├─ config.py                 # .env 読み込み
-      ├─ models.py                 # 画面共通定義
+      ├─ app.py
+      ├─ config.py
+      ├─ domain/
       ├─ infrastructure/
-      │  └─ access_gateway.py      # pyodbc 経由の Access 参照層
       ├─ services/
-      │  ├─ defect_service.py      # 検索・集計・出力用データ取得
-      │  └─ export_service.py      # Excel 保存と書式設定
-      └─ ui/
-         ├─ main_window.py         # メイン画面
-         └─ table_models.py        # DataFrame 用テーブルモデル
-      └─ ui_kit/
-         ├─ theme.py               # Fusion + Palette + 共通 stylesheet
-         ├─ assets/
-         │  └─ combo_arrow_down.svg
-         └─ widgets/
-            ├─ modal_dialog.py
-            ├─ message_box.py
-            ├─ date_picker.py
-            └─ busy_indicator.py
+      └─ webview/
+         ├─ app.py
+         ├─ bridge.py
+         └─ assets/
+            ├─ index.html
+            ├─ app.js
+            └─ styles.css
 ```
 
-## セットアップ
+## 起動フロー
 
-1. `.env.example` をコピーして `.env` を作成します。
-2. `.env` に親 Access DB のパスを設定します。
+1. `main.py` から `defect_information_search.app.main()` を呼びます。
+2. `webview/app.py` が `.env` を読み込み、Access / PostgreSQL の接続先を決めます。
+3. `pywebview` を `gui="edgechromium"` で起動し、Edge WebView2 上に画面を表示します。
+4. 画面操作は `webview/bridge.py` 経由で service 層に渡り、検索・集計・Excel 出力を行います。
 
-```env
-ACCESS_DB_PATH=C:\Users\<USER>\Desktop\不具合情報検索.accdb
-```
+## 依存関係
 
-3. 仮想環境を作成し、依存関係をインストールします。
+`requirements.txt` に入っている主な依存は以下です。
 
-```powershell
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
-```
+- `pywebview`
+- `pyodbc`
+- `pandas`
+- `openpyxl`
+- `python-dotenv`
+- `pyinstaller`
 
-## 起動
+PySide6 / Qt 系は使用していません。
+
+## 実行
 
 ```powershell
 .\.venv\Scripts\python.exe .\main.py
 ```
 
-## exe ビルド
+## ビルド
+
+onefile の exe は次で作成します。
 
 ```powershell
 .\build_exe.ps1
 ```
 
-生成物は `dist\defect_information_search.exe` です。
+ビルドスクリプトは `docs\工業検査とエラー検出アイコン.png` から `.ico` を生成し、`.env` も同梱したうえで PyInstaller onefile を作成します。  
+最終成果物は `dist\不具合情報検索.exe` のみです。
 
-## 実装方針
+## 配布時の前提
 
-- `.env` では親 DB の `不具合情報検索.accdb` のみを指定します。
-- Python からは `pyodbc` で親 DB を参照します。
-- リンクテーブルは親 DB 側の定義をそのまま使います。
-- 既存 VBA の SQL を踏襲し、以下を実装しています。
-  - 品番検索
-  - 品番別の不具合集計
-  - 号機絞り込み
-  - 明細一覧表示
-  - 検索結果の Excel 出力
-  - 期間指定の不具合情報出力
-  - 集計データ出力
-  - 廃棄データ出力
+- 配布先 PC には Microsoft Edge WebView2 Runtime が必要です。
+- `.env` に設定した `ACCESS_DB_PATH` が到達可能である必要があります。
+- 現在の `.env` はネットワーク共有上の Access DB を参照しています。
 
-## 注意
+## アイコン
 
-- 実行環境は Windows 固定です。
-- Access のリンク先 DB や権限状況によっては、参照時に Access 側エラーが返る場合があります。
-- このリポジトリ側では実 DB への完全な動作確認までは行っていません。`.env` 設定後に実環境で接続確認してください。
+- 元画像: [`docs/工業検査とエラー検出アイコン.png`](docs/工業検査とエラー検出アイコン.png)
+- ビルド時に `build/app_icon.ico` を生成し、exe のアイコンとアプリ内アイコンに使います。
+
+## 現在の処理
+
+- 品番候補検索
+- 候補一覧からの詳細表示
+- 号機絞り込み
+- 集計値・不具合内訳表示
+- 表示中データの Excel 出力
+- 日付範囲での全品番エクスポート / 集計データ出力 / 廃棄データ出力
+
+## 補足
+
+- 旧 PySide6 画面は削除済みです。
+- 画面の見た目と業務ロジックは維持し、UI だけを WebView 化しています。

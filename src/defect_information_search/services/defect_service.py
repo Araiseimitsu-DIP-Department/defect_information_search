@@ -8,10 +8,9 @@ from typing import Any
 import pandas as pd
 
 from defect_information_search.application.ports.defect_repository import DefectRepository
-from defect_information_search.domain.models import DefectRecord, ProductCatalogItem
+from defect_information_search.domain.models import ProductCatalogItem
 from defect_information_search.infrastructure.mappers.domain_mappers import (
     defect_records_frame_from_items,
-    defect_records_from_frame,
     product_catalog_frame_from_items,
     product_master_frame_from_items,
     qr_history_frame_from_items,
@@ -21,7 +20,6 @@ from defect_information_search.services.export_service import ExportService
 
 
 DETAIL_COLUMNS = [
-    "ID",
     "生産ロットID",
     "品番",
     "指示日",
@@ -224,16 +222,19 @@ class DefectService:
         if details.empty:
             return {}
 
-        defect_records = defect_records_from_frame(details)
-        quantity = sum(record.quantity or 0 for record in defect_records)
-        defect_count = sum(record.total_defects or 0 for record in defect_records)
+        quantity = int(pd.to_numeric(details["数量"], errors="coerce").fillna(0).sum()) if "数量" in details.columns else 0
+        defect_count = (
+            int(pd.to_numeric(details["総不具合数"], errors="coerce").fillna(0).sum())
+            if "総不具合数" in details.columns
+            else 0
+        )
         summary = {
-            "quantity": int(quantity),
-            "defect_count": int(defect_count),
+            "quantity": quantity,
+            "defect_count": defect_count,
             "defect_rate": (float(defect_count) / float(quantity)) if quantity else None,
         }
         for label, _ in DEFECT_FIELDS:
-            value = sum(record.defect_counts.get(label, 0) for record in defect_records)
+            value = int(pd.to_numeric(details[label], errors="coerce").fillna(0).sum()) if label in details.columns else 0
             summary[label] = int(value) if value else None
         return summary
 
@@ -251,7 +252,6 @@ class DefectService:
 
     def _prepare_detail_frame(self, details: pd.DataFrame) -> pd.DataFrame:
         prepared = self._ensure_columns(details.copy(), DETAIL_COLUMNS)
-        prepared["数値検査員"] = None
         return prepared.loc[:, DETAIL_COLUMNS].reset_index(drop=True)
 
     def _ensure_columns(self, dataframe: pd.DataFrame, columns: list[str]) -> pd.DataFrame:

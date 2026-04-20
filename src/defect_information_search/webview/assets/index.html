@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>不具合情報検索</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <div>
+        <h1 id="app-title">不具合情報検索</h1>
+        <p class="subtitle">品番検索、集計確認、Excel 出力をまとめて行う</p>
+      </div>
+      <button id="close-btn" class="button button-secondary" type="button">終了</button>
+    </header>
+
+    <main class="content">
+      <section class="top-grid">
+        <article class="panel panel-search">
+          <h2>検索条件</h2>
+          <div class="search-form">
+            <div class="search-row">
+              <label for="keyword">品番</label>
+              <input id="keyword" type="text" autocomplete="off">
+            </div>
+            <div class="search-row">
+              <label for="part-name">品名</label>
+              <input id="part-name" type="text" readonly>
+            </div>
+            <div class="search-row">
+              <label for="customer">客先</label>
+              <input id="customer" type="text" readonly>
+            </div>
+            <div class="search-date-row">
+              <label for="search-from">開始日</label>
+              <input id="search-from" type="date">
+              <span class="date-separator">～</span>
+              <label for="search-to">終了日</label>
+              <input id="search-to" type="date">
+              <button id="search-btn" class="button button-primary" type="button">検索</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="panel panel-products">
+          <div class="panel-header">
+            <h2>候補一覧</h2>
+            <span id="product-count" class="meta">0件</span>
+          </div>
+          <div class="table-wrap table-wrap-products">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>品番</th>
+                  <th>品名</th>
+                  <th>客先</th>
+                </tr>
+              </thead>
+              <tbody id="product-body"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="panel panel-export">
+          <h2>不具合情報エクスポート（全品番）</h2>
+          <div class="export-form">
+            <div class="export-date-row">
+              <label for="export-from">開始日</label>
+              <input id="export-from" type="date">
+              <span class="date-separator">～</span>
+              <label for="export-to">終了日</label>
+              <input id="export-to" type="date">
+            </div>
+            <div class="stack">
+              <button id="export-all-btn" class="button button-block button-export" type="button">不具合情報エクスポート</button>
+              <button id="export-aggregate-btn" class="button button-block button-aggregate" type="button">集計データ</button>
+              <button id="export-disposal-btn" class="button button-block button-danger" type="button">廃棄データエクスポート</button>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="panel panel-summary">
+        <div class="summary-top">
+          <div class="metrics">
+            <div class="metric">
+              <span>数量</span>
+              <strong id="quantity-value">0</strong>
+            </div>
+            <div class="metric danger">
+              <span>不具合数</span>
+              <strong id="defect-count-value">0</strong>
+            </div>
+            <div class="metric rate">
+              <span>不良率</span>
+              <strong id="defect-rate-value">0.00%</strong>
+            </div>
+          </div>
+          <div class="machine-box">
+            <label for="machine-select">号機</label>
+            <select id="machine-select">
+              <option value="全て">全て</option>
+            </select>
+          </div>
+        </div>
+        <div id="defect-grid" class="defect-grid"></div>
+      </section>
+
+      <section class="panel panel-details">
+        <div class="detail-toolbar">
+          <div class="detail-summary">
+            <span id="detail-count">0件</span>
+            <span id="filter-state">検索条件: なし</span>
+          </div>
+          <div class="detail-search">
+            <label>検索:<input id="table-search" type="search" placeholder="キーワード"></label>
+            <button id="clear-search-btn" class="button button-secondary" type="button">解除</button>
+          </div>
+          <button id="export-current-btn" class="button button-primary" type="button">エクスポート</button>
+        </div>
+        <div class="table-wrap table-wrap-details">
+          <table class="data-table sticky-head detail-table">
+            <colgroup id="detail-colgroup"></colgroup>
+            <thead>
+              <tr id="detail-head"></tr>
+            </thead>
+            <tbody id="detail-body"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="overlay" class="overlay hidden">
+    <div class="overlay-card">
+      <div class="spinner"></div>
+      <h3 id="overlay-title">処理中</h3>
+      <p id="overlay-message">しばらくお待ちください。</p>
+    </div>
+  </div>
+
+  <div id="dialog" class="overlay hidden">
+    <div class="dialog-card">
+      <h3 id="dialog-title"></h3>
+      <p id="dialog-message"></p>
+      <div id="dialog-actions" class="dialog-actions"></div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="./app.js"></script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-﻿# Python cache and bytecode
+# Python bytecode and caches
 __pycache__/
 *.py[cod]
 *.pyo
@@ -28,8 +28,15 @@ coverage.xml
 build/
 dist/
 *.spec
+*.pkg
+*.toc
+*.pyz
 *.egg-info/
 pip-wheel-metadata/
+
+# Packaged runtime outputs
+app_icon.ico
+不具合情報検索.exe
 
 # IDE and OS files
 .idea/
@@ -52,9 +59,9 @@ runtime/
 *.tmp
 *.temp
 *.bak
-*.xlsx
 
-# Access database files and lock files
+# Local data files
+*.xlsx
 *.accdb
 *.mdb
 *.laccdb
@@ -65,8 +72,3 @@ tmp_sample.accdb
 # SQLite and local scratch databases
 *.db
 *.sqlite3
-
-# PyInstaller / packaging helper outputs
-*.pkg
-*.toc
-*.pyz

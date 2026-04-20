@@ -10,10 +10,10 @@ from dotenv import load_dotenv
 
 APP_NAME = "不具合情報検索"
 APP_USER_MODEL_ID = "defect_information_search"
-# アイコン元画像（docs 配下）。ビルド時に ICO / 同梱用 PNG を生成する。
+# アイコン元画像（docs 配下）。
 APP_ICON_SOURCE_FILENAME = "工業検査とエラー検出アイコン.png"
-# PyInstaller 同梱・実行時読込用（ASCII 名。prepare_icon が build に出力する）
-APP_ICON_RUNTIME_FILENAME = "window_icon.png"
+# ビルド時に生成し、実行時にも参照する ICO ファイル名。
+APP_ICON_RUNTIME_FILENAME = "app_icon.ico"
 
 
 @dataclass(frozen=True)
@@ -29,6 +29,7 @@ class AppConfig:
             if env_path.exists():
                 load_dotenv(env_path, override=False)
                 break
+
         db_path = os.getenv("ACCESS_DB_PATH", "").strip().strip('"')
         if db_path.startswith("\\") and not db_path.startswith("\\\\"):
             db_path = "\\" + db_path
@@ -38,9 +39,11 @@ class AppConfig:
                 "\n.exe と同じフォルダ、または 1 つ上のフォルダに .env を置くか、"
                 "環境変数 ACCESS_DB_PATH を設定してください。"
             )
+
         database_backend = os.getenv("DATABASE_BACKEND", "access").strip().lower() or "access"
         if database_backend not in {"access", "postgres"}:
             raise ValueError("DATABASE_BACKEND は access か postgres を設定してください。")
+
         postgres_dsn = os.getenv("POSTGRES_DSN", "").strip().strip('"') or None
         return cls(
             access_db_path=Path(db_path),
@@ -55,6 +58,7 @@ class AppConfig:
             candidates.append(search_dir / ".env")
             candidates.append(search_dir.parent / ".env")
         candidates.append(Path.cwd() / ".env")
+
         unique_candidates: list[Path] = []
         seen: set[str] = set()
         for candidate in candidates:

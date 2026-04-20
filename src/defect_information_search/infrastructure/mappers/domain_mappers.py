@@ -164,6 +164,7 @@ def defect_records_from_frame(frame: pd.DataFrame) -> list[DefectRecord]:
                 defect_rate=_as_optional_float(row.get("不良率")),
                 defect_counts=defect_counts,
                 other_content=_as_optional_str(row.get("その他内容")),
+                numeric_inspector=_as_optional_str(row.get("数値検査員")),
             )
         )
     return items
@@ -217,6 +218,7 @@ def defect_records_frame_from_items(items: list[DefectRecord]) -> pd.DataFrame:
             "総不具合数": item.total_defects,
             "不良率": item.defect_rate,
             "その他内容": item.other_content,
+            "数値検査員": item.numeric_inspector,
         }
         for name, value in zip(inspector_columns, item.inspector_names):
             row[name] = value
@@ -224,7 +226,6 @@ def defect_records_frame_from_items(items: list[DefectRecord]) -> pd.DataFrame:
             row[name] = item.defect_counts.get(name, 0)
         rows.append(row)
     columns = [
-        "ID",
         "生産ロットID",
         "品番",
         "指示日",
@@ -238,7 +239,7 @@ def defect_records_frame_from_items(items: list[DefectRecord]) -> pd.DataFrame:
         "数量",
         "総不具合数",
         "不良率",
-    ] + defect_columns + ["その他内容"]
+    ] + defect_columns + ["その他内容", "数値検査員"]
     return pd.DataFrame(rows, columns=columns)
 
 

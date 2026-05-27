@@ -21,6 +21,7 @@ class AppConfig:
     access_db_path: Path
     database_backend: str = "access"
     postgres_dsn: str | None = None
+    postgres_schema: str = "public"
 
     @classmethod
     def load(cls, base_dir: Path, extra_dirs: Iterable[Path] | None = None) -> "AppConfig":
@@ -40,15 +41,21 @@ class AppConfig:
                 "環境変数 ACCESS_DB_PATH を設定してください。"
             )
 
-        database_backend = os.getenv("DATABASE_BACKEND", "access").strip().lower() or "access"
+        database_backend = (
+            os.getenv("DB_BACKEND") or os.getenv("DATABASE_BACKEND") or "access"
+        ).strip().lower() or "access"
         if database_backend not in {"access", "postgres"}:
-            raise ValueError("DATABASE_BACKEND は access か postgres を設定してください。")
+            raise ValueError("DB_BACKEND は access か postgres を設定してください。")
 
-        postgres_dsn = os.getenv("POSTGRES_DSN", "").strip().strip('"') or None
+        postgres_dsn = (
+            os.getenv("POSTGRES_CONNECTION_URL") or os.getenv("POSTGRES_DSN") or ""
+        ).strip().strip('"') or None
+        postgres_schema = os.getenv("POSTGRES_SCHEMA", "public").strip().strip('"') or "public"
         return cls(
             access_db_path=Path(db_path),
             database_backend=database_backend,
             postgres_dsn=postgres_dsn,
+            postgres_schema=postgres_schema,
         )
 
     @staticmethod

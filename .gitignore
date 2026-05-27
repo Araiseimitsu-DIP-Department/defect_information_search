@@ -55,6 +55,8 @@ Desktop.ini
 logs/
 tmp/
 runtime/
+exports/
+scratch/
 *.log
 *.tmp
 *.temp
@@ -72,3 +74,12 @@ tmp_sample.accdb
 # SQLite and local scratch databases
 *.db
 *.sqlite3
+
+# PostgreSQL dumps and migration scratch exports
+*.dump
+*.backup
+*.psql
+*.pgpass
+database/postgresql/export/
+database/postgresql/tmp/
+database/postgresql/*.csv

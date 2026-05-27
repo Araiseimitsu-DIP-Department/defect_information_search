@@ -36,6 +36,7 @@ class _FakeRepository:
                 instruction_date=date_from,
                 machine_code="1",
                 quantity=10,
+                work_minutes=30,
                 total_defects=2,
                 defect_rate=0.2,
                 defect_counts={"外観キズ": 2},

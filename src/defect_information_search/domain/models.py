@@ -64,6 +64,7 @@ class DefectRecord:
         default_factory=lambda: (None, None, None, None, None)
     )
     quantity: int | None = None
+    work_minutes: int | None = None
     total_defects: int | None = None
     defect_rate: float | None = None
     defect_counts: dict[str, int] = field(default_factory=dict)

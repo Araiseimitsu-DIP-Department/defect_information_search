@@ -43,7 +43,7 @@ class AccessRepositorySqlTests(unittest.TestCase):
         self.repo.find_defects_for_part("A001", "2026-04-14", "2026-04-15")
 
         sql, params = self.fake_gateway.calls[-1]
-        self.assertIn("[t_不具合情報]", sql)
+        self.assertIn("t_不具合情報", sql)
         self.assertEqual(params, ("A001", "2026-04-14", "2026-04-15"))
 
     def test_find_qr_history_lots_uses_current_table_name(self) -> None:

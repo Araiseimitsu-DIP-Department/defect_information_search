@@ -17,9 +17,9 @@ def product_catalog_items_from_frame(frame: pd.DataFrame) -> list[ProductCatalog
     for row in frame.to_dict("records"):
         items.append(
             ProductCatalogItem(
-                part_number=_as_optional_str(row.get("品番")) or "",
-                part_name=_as_optional_str(row.get("品名")),
-                customer=_as_optional_str(row.get("客先")),
+                part_number=_as_optional_str(_value(row, "part_number", "品番")) or "",
+                part_name=_as_optional_str(_value(row, "part_name", "品名")),
+                customer=_as_optional_str(_value(row, "customer_name", "客先")),
             )
         )
     return items
@@ -44,14 +44,14 @@ def product_master_items_from_frame(frame: pd.DataFrame) -> list[ProductMasterIt
     for row in frame.to_dict("records"):
         items.append(
             ProductMasterItem(
-                product_number=_as_optional_str(row.get("製品番号")) or "",
-                product_name=_as_optional_str(row.get("製品名")),
-                customer_name=_as_optional_str(row.get("客先名")),
-                material=_as_optional_str(row.get("材質")),
-                unit_price=_as_optional_float(row.get("単価")),
-                product_weight=_as_optional_float(row.get("製品単重")),
-                material_identification=_as_optional_int(row.get("材料識別")),
-                next_process=_as_optional_str(row.get("次工程")),
+                product_number=_as_optional_str(_value(row, "product_number", "製品番号")) or "",
+                product_name=_as_optional_str(_value(row, "product_name", "製品名")),
+                customer_name=_as_optional_str(_value(row, "customer_name", "客先名")),
+                material=_as_optional_str(_value(row, "material", "材質")),
+                unit_price=_as_optional_float(_value(row, "unit_price", "単価")),
+                product_weight=_as_optional_float(_value(row, "unit_weight", "製品単重")),
+                material_identification=_as_optional_int(_value(row, "material_type", "材料識別")),
+                next_process=_as_optional_str(_value(row, "next_process", "次工程")),
             )
         )
     return items
@@ -81,14 +81,14 @@ def qr_history_items_from_frame(frame: pd.DataFrame) -> list[QrHistoryItem]:
     for row in frame.to_dict("records"):
         items.append(
             QrHistoryItem(
-                lot_id=_as_optional_str(row.get("生産ロットID")) or "",
-                qr_code=_as_optional_str(row.get("QRコード")),
-                recorded_at=_as_optional_datetime(row.get("日付時刻")),
-                operation_date=_as_optional_date(row.get("日付")),
-                process_code=_as_optional_str(row.get("工程コード")),
-                process_name=_as_optional_str(row.get("工程名")),
-                quantity=_as_optional_int(row.get("数量")),
-                update_flag=_as_optional_str(row.get("更新フラグ")),
+                lot_id=_as_optional_str(_value(row, "production_lot_id", "生産ロットID")) or "",
+                qr_code=_as_optional_str(_value(row, "qr_code", "QRコード")),
+                recorded_at=_as_optional_datetime(_value(row, "recorded_at", "日付時刻")),
+                operation_date=_as_optional_date(_value(row, "event_at", "日付")),
+                process_code=_as_optional_str(_value(row, "process_code", "工程コード")),
+                process_name=_as_optional_str(_value(row, "process_name", "工程名")),
+                quantity=_as_optional_int(_value(row, "quantity", "数量")),
+                update_flag=_as_optional_str(_value(row, "updated_flag", "更新フラグ")),
             )
         )
     return items
@@ -115,56 +115,29 @@ def qr_history_frame_from_items(items: list[QrHistoryItem]) -> pd.DataFrame:
 
 def defect_records_from_frame(frame: pd.DataFrame) -> list[DefectRecord]:
     items: list[DefectRecord] = []
-    inspector_columns = ["検査者1", "検査者2", "検査者3", "検査者4", "検査者5"]
-    defect_columns = [
-        "外観キズ",
-        "圧痕",
-        "切粉",
-        "毟れ",
-        "穴大",
-        "穴小",
-        "穴キズ",
-        "バリ",
-        "短寸",
-        "面粗",
-        "サビ",
-        "ボケ",
-        "挽目",
-        "汚れ",
-        "メッキ",
-        "落下",
-        "フクレ",
-        "ツブレ",
-        "ボッチ",
-        "段差",
-        "バレル石",
-        "径プラス",
-        "径マイナス",
-        "ゲージ",
-        "異物混入",
-        "形状不良",
-        "こすれ",
-        "変色シミ",
-        "材料キズ",
-        "ゴミ",
-        "その他",
-    ]
     for row in frame.to_dict("records"):
-        defect_counts = {name: _as_optional_int(row.get(name)) or 0 for name in defect_columns}
+        defect_counts = {
+            label: _as_optional_int(_value(row, english, label)) or 0
+            for label, english in DEFECT_COLUMN_PAIRS
+        }
         items.append(
             DefectRecord(
-                record_id=_as_optional_int(row.get("ID")),
-                lot_id=_as_optional_str(row.get("生産ロットID")) or "",
-                part_number=_as_optional_str(row.get("品番")) or "",
-                instruction_date=_as_optional_date(row.get("指示日")),
-                machine_code=_as_optional_str(row.get("号機")),
-                inspector_names=tuple(_as_optional_str(row.get(name)) for name in inspector_columns),  # type: ignore[arg-type]
-                quantity=_as_optional_int(row.get("数量")),
-                total_defects=_as_optional_int(row.get("総不具合数")),
-                defect_rate=_as_optional_float(row.get("不良率")),
+                record_id=_as_optional_int(_value(row, "id", "ID")),
+                lot_id=_as_optional_str(_value(row, "production_lot_id", "生産ロットID")) or "",
+                part_number=_as_optional_str(_value(row, "part_number", "品番")) or "",
+                instruction_date=_as_optional_date(_value(row, "instruction_date", "指示日")),
+                machine_code=_as_optional_str(_value(row, "machine_no", "号機")),
+                inspector_names=tuple(
+                    _as_optional_str(_value(row, f"inspector_{index}", f"検査者{index}"))
+                    for index in range(1, 6)
+                ),  # type: ignore[arg-type]
+                quantity=_as_optional_int(_value(row, "quantity", "数量")),
+                work_minutes=_as_optional_int(_value(row, "work_minutes", "時間")),
+                total_defects=_as_optional_int(_value(row, "total_defect_count", "総不具合数")),
+                defect_rate=_as_optional_float(_value(row, "defect_rate", "不良率")),
                 defect_counts=defect_counts,
-                other_content=_as_optional_str(row.get("その他内容")),
-                numeric_inspector=_as_optional_str(row.get("数値検査員")),
+                other_content=_as_optional_str(_value(row, "other_detail", "その他内容")),
+                numeric_inspector=_as_optional_str(_value(row, "inspector_name", "数値検査員")),
             )
         )
     return items
@@ -213,7 +186,7 @@ def defect_records_frame_from_items(items: list[DefectRecord]) -> pd.DataFrame:
             "品番": item.part_number,
             "指示日": item.instruction_date,
             "号機": item.machine_code,
-            "時間": None,
+            "時間": item.work_minutes,
             "数量": item.quantity,
             "総不具合数": item.total_defects,
             "不良率": item.defect_rate,
@@ -226,6 +199,7 @@ def defect_records_frame_from_items(items: list[DefectRecord]) -> pd.DataFrame:
             row[name] = item.defect_counts.get(name, 0)
         rows.append(row)
     columns = [
+        "ID",
         "生産ロットID",
         "品番",
         "指示日",
@@ -253,6 +227,48 @@ def _as_optional_str(value: object) -> str | None:
         pass
     text = str(value).strip()
     return text or None
+
+
+DEFECT_COLUMN_PAIRS = [
+    ("外観キズ", "appearance_scratch"),
+    ("圧痕", "dent"),
+    ("切粉", "chip"),
+    ("毟れ", "tear"),
+    ("穴大", "hole_large"),
+    ("穴小", "hole_small"),
+    ("穴キズ", "hole_scratch"),
+    ("バリ", "burr"),
+    ("短寸", "short_length"),
+    ("面粗", "rough_surface"),
+    ("サビ", "rust"),
+    ("ボケ", "blur"),
+    ("挽目", "turning_mark"),
+    ("汚れ", "stain"),
+    ("メッキ", "plating"),
+    ("落下", "drop_damage"),
+    ("フクレ", "blister"),
+    ("ツブレ", "crush"),
+    ("ボッチ", "projection"),
+    ("段差", "step"),
+    ("バレル石", "barrel_stone"),
+    ("径プラス", "diameter_plus"),
+    ("径マイナス", "diameter_minus"),
+    ("ゲージ", "gauge"),
+    ("異物混入", "foreign_matter"),
+    ("形状不良", "shape_defect"),
+    ("こすれ", "rub_mark"),
+    ("変色シミ", "discoloration"),
+    ("材料キズ", "material_scratch"),
+    ("ゴミ", "dust"),
+    ("その他", "other"),
+]
+
+
+def _value(row: dict[str, object], *names: str) -> object:
+    for name in names:
+        if name in row:
+            return row.get(name)
+    return None
 
 
 def _as_optional_int(value: object) -> int | None:

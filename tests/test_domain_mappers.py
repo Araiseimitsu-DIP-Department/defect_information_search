@@ -39,6 +39,19 @@ class DomainMapperTests(unittest.TestCase):
         self.assertEqual(items[0].customer, "顧客A")
         self.assertEqual(items[1].part_name, None)
 
+    def test_product_catalog_items_from_english_columns(self) -> None:
+        frame = pd.DataFrame(
+            [
+                {"part_number": "P001", "part_name": "Part A", "customer_name": "Customer A"},
+            ]
+        )
+
+        items = product_catalog_items_from_frame(frame)
+
+        self.assertEqual(items[0].part_number, "P001")
+        self.assertEqual(items[0].part_name, "Part A")
+        self.assertEqual(items[0].customer, "Customer A")
+
     def test_product_catalog_frame_from_items(self) -> None:
         frame = product_catalog_frame_from_items(
             [
@@ -62,6 +75,29 @@ class DomainMapperTests(unittest.TestCase):
                     "製品単重": 2.4,
                     "材料識別": 1,
                     "次工程": "加工",
+                }
+            ]
+        )
+
+        items = product_master_items_from_frame(frame)
+
+        self.assertEqual(items[0].product_number, "A001")
+        self.assertEqual(items[0].unit_price, 120.5)
+        self.assertEqual(items[0].product_weight, 2.4)
+        self.assertEqual(items[0].material_identification, 1)
+
+    def test_product_master_items_from_english_columns(self) -> None:
+        frame = pd.DataFrame(
+            [
+                {
+                    "product_number": "A001",
+                    "product_name": "Product A",
+                    "customer_name": "Customer A",
+                    "material": "SUS",
+                    "unit_price": 120.5,
+                    "unit_weight": 2.4,
+                    "material_type": 1,
+                    "next_process": "加工",
                 }
             ]
         )
@@ -119,6 +155,29 @@ class DomainMapperTests(unittest.TestCase):
         self.assertEqual(items[0].quantity, 15)
         self.assertEqual(items[0].update_flag, "1")
 
+    def test_qr_history_items_from_english_columns(self) -> None:
+        frame = pd.DataFrame(
+            [
+                {
+                    "production_lot_id": "P123",
+                    "qr_code": "QR-001",
+                    "recorded_at": "2026-04-14 12:30:00",
+                    "event_at": "2026-04-14",
+                    "process_code": "03",
+                    "process_name": "Inspection",
+                    "quantity": 15,
+                    "updated_flag": "1",
+                }
+            ]
+        )
+
+        items = qr_history_items_from_frame(frame)
+
+        self.assertEqual(items[0].lot_id, "P123")
+        self.assertEqual(items[0].process_code, "03")
+        self.assertEqual(items[0].quantity, 15)
+        self.assertEqual(items[0].update_flag, "1")
+
     def test_qr_history_frame_from_items(self) -> None:
         frame = qr_history_frame_from_items(
             [
@@ -152,6 +211,7 @@ class DomainMapperTests(unittest.TestCase):
                     "指示日": "2026-04-14",
                     "号機": "1",
                     "検査者1": "山田",
+                    "時間": 45,
                     "数量": 100,
                     "総不具合数": 3,
                     "不良率": 0.03,
@@ -168,9 +228,42 @@ class DomainMapperTests(unittest.TestCase):
         self.assertEqual(items[0].lot_id, "P123")
         self.assertEqual(items[0].part_number, "A001")
         self.assertEqual(items[0].quantity, 100)
+        self.assertEqual(items[0].work_minutes, 45)
         self.assertEqual(items[0].total_defects, 3)
         self.assertEqual(items[0].defect_counts["外観キズ"], 1)
         self.assertEqual(items[0].defect_counts["切粉"], 2)
+
+    def test_defect_records_from_english_columns(self) -> None:
+        frame = pd.DataFrame(
+            [
+                {
+                    "id": 1,
+                    "production_lot_id": "P123",
+                    "part_number": "A001",
+                    "instruction_date": "2026-04-14",
+                    "machine_no": "1",
+                    "inspector_1": "山田",
+                    "work_minutes": 45,
+                    "quantity": 100,
+                    "total_defect_count": 3,
+                    "defect_rate": 0.03,
+                    "appearance_scratch": 1,
+                    "chip": 2,
+                    "other_detail": "備考",
+                    "inspector_name": "佐藤",
+                }
+            ]
+        )
+
+        items = defect_records_from_frame(frame)
+
+        self.assertEqual(items[0].record_id, 1)
+        self.assertEqual(items[0].lot_id, "P123")
+        self.assertEqual(items[0].part_number, "A001")
+        self.assertEqual(items[0].work_minutes, 45)
+        self.assertEqual(items[0].defect_counts["外観キズ"], 1)
+        self.assertEqual(items[0].defect_counts["切粉"], 2)
+        self.assertEqual(items[0].numeric_inspector, "佐藤")
 
     def test_defect_records_frame_from_items(self) -> None:
         frame = defect_records_frame_from_items(
@@ -186,16 +279,19 @@ class DomainMapperTests(unittest.TestCase):
                         "machine_code": "1",
                         "inspector_names": ("山田", None, None, None, None),
                         "quantity": 100,
+                        "work_minutes": 45,
                         "total_defects": 3,
                         "defect_rate": 0.03,
                         "defect_counts": {"外観キズ": 1, "切粉": 2},
                         "other_content": "備考",
+                        "numeric_inspector": None,
                     },
                 )()
             ]
         )
 
         self.assertEqual(frame.iloc[0]["ID"], 1)
+        self.assertEqual(frame.iloc[0]["時間"], 45)
         self.assertEqual(frame.iloc[0]["外観キズ"], 1)
         self.assertEqual(frame.iloc[0]["切粉"], 2)
 

@@ -121,3 +121,10 @@ onefile の exe は次で作成します。
 - 旧 PySide6 画面は削除済みです。
 - 画面の見た目と業務ロジックは維持し、UI は WebView 化しています。
 - Access repository は切り戻し期間のために残しています。
+
+## UI Design
+
+- `DESIGN/DESIGN.md` is the primary UI reference for the WebView screen tokens, spacing, cards, tables, and buttons.
+- This screen has no page menu, so the left sidebar is not used.
+- The ARAI logo is placed in the title row and bundled from `src/defect_information_search/webview/assets/arai_logo.png`.
+- The footer is rendered at the bottom of the WebView with the standard copyright text.

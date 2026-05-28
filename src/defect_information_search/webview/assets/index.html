@@ -8,15 +8,19 @@
 </head>
 <body>
   <div class="app-shell">
-    <header class="app-header">
-      <div>
-        <h1 id="app-title">不具合情報検索</h1>
-        <p class="subtitle">品番検索、集計確認、Excel 出力をまとめて行う</p>
-      </div>
-      <button id="close-btn" class="button button-secondary" type="button">終了</button>
-    </header>
+    <div class="app-main">
+      <header class="app-header">
+        <div class="title-row">
+          <img class="title-logo" src="./arai_logo.png" alt="新井精密">
+          <div>
+            <h1 id="app-title">不具合情報検索</h1>
+            <p class="subtitle">品番検索、集計確認、Excel 出力をまとめて行う</p>
+          </div>
+        </div>
+        <button id="close-btn" class="button button-secondary" type="button">終了</button>
+      </header>
 
-    <main class="content">
+      <main class="content">
       <section class="top-grid">
         <article class="panel panel-search">
           <h2>検索条件</h2>
@@ -130,7 +134,11 @@
           </table>
         </div>
       </section>
-    </main>
+      </main>
+      <footer class="app-footer">
+        <span>&copy; ARAISEIMITSU 2026 - Created By DIP Department</span>
+      </footer>
+    </div>
   </div>
 
   <div id="overlay" class="overlay hidden">

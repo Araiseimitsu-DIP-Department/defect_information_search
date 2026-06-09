@@ -76,7 +76,7 @@ def clean_int(value: Any) -> int | None:
     if value is None or value == "":
         return None
     try:
-        return int(float(value))
+        return max(int(float(value)), 0)
     except (TypeError, ValueError):
         return None
 
@@ -451,6 +451,35 @@ def batched(rows: Iterable[tuple[Any, ...]], batch_size: int) -> Iterator[list[t
         yield batch
 
 
+def ensure_inspection_inspectors(connection: Any, sql_module: Any, gateway: AccessGateway) -> None:
+    inspection_migration = next(migration for migration in MIGRATIONS if migration.target_table == "inspection_records")
+    source_ids = {
+        row[3]
+        for row in stream_transformed_rows(gateway, inspection_migration)
+        if row[3] is not None
+    }
+    if not source_ids:
+        return
+
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT inspector_id FROM inspector_master")
+        existing_ids = {row[0] for row in cursor.fetchall()}
+
+    missing_ids = sorted(source_ids - existing_ids)
+    if not missing_ids:
+        return
+
+    statement = sql_module.SQL(
+        "INSERT INTO inspector_master (inspector_id, visible) VALUES ({}, {}) "
+        "ON CONFLICT (inspector_id) DO NOTHING"
+    ).format(sql_module.Placeholder(), sql_module.Placeholder())
+    rows = [(inspector_id, False) for inspector_id in missing_ids]
+    with connection.cursor() as cursor:
+        cursor.executemany(statement, rows)
+    connection.commit()
+    print(f"inspector_master: added {len(rows)} placeholder inspector ids")
+
+
 def run_apply(config: AppConfig, gateway: AccessGateway, args: argparse.Namespace) -> int:
     if not config.postgres_dsn:
         raise SystemExit("POSTGRES_CONNECTION_URL is required for --apply.")
@@ -467,6 +496,9 @@ def run_apply(config: AppConfig, gateway: AccessGateway, args: argparse.Namespac
             truncate_tables(connection, sql_module)
 
         for migration in MIGRATIONS:
+            if migration.target_table == "inspection_records":
+                ensure_inspection_inspectors(connection, sql_module, gateway)
+
             written = 0
             for batch in batched(stream_transformed_rows(gateway, migration), args.batch_size):
                 insert_batch(connection, sql_module, migration, batch)

@@ -583,6 +583,18 @@ input[readonly] {
     overflow: auto;
   }
 
+  .panel-products {
+    min-height: 12rem;
+  }
+
+  .panel-summary {
+    min-height: 10rem;
+  }
+
+  .panel-details {
+    min-height: 20rem;
+  }
+
   .detail-toolbar,
   .summary-top,
   .app-header {
@@ -599,5 +611,128 @@ input[readonly] {
   .detail-search input {
     width: 100%;
     min-width: 0;
+  }
+}
+
+@media (max-height: 819px) {
+  html,
+  body {
+    height: auto;
+    min-height: 100%;
+  }
+
+  body {
+    overflow: auto;
+  }
+
+  .app-shell {
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .app-main {
+    overflow: visible;
+  }
+
+  .app-header {
+    padding: 0.625rem 0.875rem 0.375rem;
+  }
+
+  .title-logo {
+    width: 7.25rem;
+    height: 1.875rem;
+  }
+
+  .app-header h1 {
+    font-size: 1.25rem;
+  }
+
+  .subtitle {
+    margin-top: 0.125rem;
+    font-size: 0.8125rem;
+  }
+
+  .content {
+    flex: 0 0 auto;
+    grid-template-rows: minmax(190px, auto) minmax(130px, auto) minmax(320px, 42vh);
+    gap: 0.375rem;
+    padding: 0.375rem 0.625rem;
+    overflow: visible;
+  }
+
+  .top-grid {
+    min-height: 0;
+  }
+
+  .panel-search,
+  .panel-export {
+    padding: 0.625rem 0.75rem;
+  }
+
+  .panel h2 {
+    margin-bottom: 0.5rem;
+  }
+
+  .panel-products,
+  .panel-summary,
+  .panel-details {
+    min-height: 0;
+  }
+
+  .panel-products .panel-header,
+  .detail-toolbar,
+  .summary-top {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .search-form,
+  .export-form {
+    gap: 0.5rem;
+  }
+
+  .button,
+  input,
+  select {
+    min-height: 1.875rem;
+  }
+
+  .defect-grid {
+    grid-auto-rows: 2.375rem;
+    padding: 0.375rem 0.5rem;
+  }
+
+  .defect-chip strong {
+    font-size: 0.9375rem;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .app-footer {
+    min-height: 1.5rem;
+  }
+}
+
+@media (max-width: 1280px) and (max-height: 819px) {
+  .content {
+    grid-template-rows: auto minmax(120px, auto) minmax(320px, auto);
+  }
+
+  .top-grid {
+    gap: 0.375rem;
+  }
+
+  .panel-products {
+    min-height: 11rem;
+  }
+
+  .panel-summary {
+    min-height: 8.5rem;
+  }
+
+  .panel-details {
+    min-height: 20rem;
   }
 }

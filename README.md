@@ -128,3 +128,11 @@ onefile の exe は次で作成します。
 - This screen has no page menu, so the left sidebar is not used.
 - The ARAI logo is placed in the title row and bundled from `src/defect_information_search/webview/assets/arai_logo.png`.
 - The footer is rendered at the bottom of the WebView with the standard copyright text.
+
+## Display Size Notes
+
+- The distributed WebView window minimum size is `960x640`.
+- On normal-height screens, the app keeps the fixed full-window layout and the product/detail tables scroll inside their panels.
+- On short screens, including `1366x768`, `1280x720`, and Windows display scale `125%` / `150%` equivalent viewports, the app switches to document-level vertical scrolling so the search fields, tables, export buttons, and footer remain reachable.
+- For low-height checks, confirm the product list and detail list still have their own scrollbars, then scroll the whole window to reach lower operation buttons.
+- Recommended manual checks: start the app, resize the window to around `960x640`, `1093x614` (`1366x768` at 125%), and `853x480` (`1280x720` at 150%), then verify search, product selection, table filtering, and export buttons are usable.

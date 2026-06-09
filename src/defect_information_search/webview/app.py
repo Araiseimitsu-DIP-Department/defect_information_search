@@ -86,7 +86,7 @@ def main() -> int:
         js_api=bridge,
         width=1600,
         height=1200,
-        min_size=(1200, 800),
+        min_size=(960, 640),
         confirm_close=True,
         maximized=True,
         background_color="#f5f7fa",

@@ -19,34 +19,47 @@ from defect_information_search.infrastructure.postgres.defect_repository import 
 
 def main() -> int:
     load_dotenv(ROOT_DIR / ".env", override=True)
-    dsn = os.environ["POSTGRES_CONNECTION_URL"]
+    appearance_dsn = os.environ["POSTGRES_APPEARANCE_CONNECTION_URL"]
+    delivery_label_dsn = os.environ["POSTGRES_DELIVERY_LABEL_CONNECTION_URL"]
+    delivery_label_search_dsn = os.environ["POSTGRES_DELIVERY_LABEL_SEARCH_CONNECTION_URL"]
+    arai_masters_dsn = os.environ["POSTGRES_ARAI_MASTERS_CONNECTION_URL"]
     schema = os.getenv("POSTGRES_SCHEMA", "public")
 
     import psycopg
 
-    with psycopg.connect(dsn, connect_timeout=30) as connection:
+    with psycopg.connect(appearance_dsn, connect_timeout=30) as connection:
         with connection.cursor() as cursor:
             cursor.execute(
                 """
-                SELECT part_number, min(instruction_date), max(instruction_date)
-                FROM public.defect_records
-                WHERE nullif(btrim(part_number), '') IS NOT NULL
-                GROUP BY part_number
+                SELECT product_code, min(instruction_date)::date, max(instruction_date)::date
+                FROM public.defect_information
+                WHERE nullif(btrim(product_code), '') IS NOT NULL
+                GROUP BY product_code
                 ORDER BY count(*) DESC
                 LIMIT 1
                 """
             )
             part_number, date_from, date_to = cursor.fetchone()
+
+    with psycopg.connect(delivery_label_dsn, connect_timeout=30) as connection:
+        with connection.cursor() as cursor:
             cursor.execute(
                 """
-                SELECT min(event_at)::date, max(event_at)::date
+                SELECT min(date_value)::date, max(date_value)::date
                 FROM public.qr_history
                 WHERE process_code = '03'
                 """
             )
             qr_from, qr_to = cursor.fetchone()
 
-    repository = PostgresDefectRepository(dsn, schema)
+    repository = PostgresDefectRepository(
+        os.getenv("POSTGRES_CONNECTION_URL"),
+        schema,
+        appearance_dsn=appearance_dsn,
+        delivery_label_dsn=delivery_label_dsn,
+        delivery_label_search_dsn=delivery_label_search_dsn,
+        arai_masters_dsn=arai_masters_dsn,
+    )
     products = repository.find_products(part_number[:3])
     defects = repository.find_defects_for_part(part_number, date_from, date_to)
     non_null_work_minutes = sum(1 for record in defects if record.work_minutes is not None)

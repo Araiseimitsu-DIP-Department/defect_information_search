@@ -67,7 +67,14 @@ def main() -> int:
         raise SystemExit(str(exc)) from exc
 
     if config.database_backend == "postgres":
-        repository = PostgresDefectRepository(config.postgres_dsn, config.postgres_schema)
+        repository = PostgresDefectRepository(
+            config.postgres_dsn,
+            config.postgres_schema,
+            appearance_dsn=config.postgres_appearance_dsn,
+            delivery_label_dsn=config.postgres_delivery_label_dsn,
+            delivery_label_search_dsn=config.postgres_delivery_label_search_dsn,
+            arai_masters_dsn=config.postgres_arai_masters_dsn,
+        )
     else:
         repository = AccessDefectRepository(config.access_db_path)
 

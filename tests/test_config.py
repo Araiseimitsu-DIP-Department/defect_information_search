@@ -135,6 +135,50 @@ class AppConfigTests(unittest.TestCase):
         self.assertEqual(config.postgres_dsn, "postgresql://example")
         self.assertEqual(config.postgres_schema, "public")
 
+    def test_load_reads_split_postgres_dsns(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            base_dir = Path(tmp)
+            (base_dir / ".env").write_text(
+                "ACCESS_DB_PATH=C:\\data\\sample.accdb\n"
+                "DB_BACKEND=postgres\n"
+                "POSTGRES_CONNECTION_URL=postgresql://appearance\n"
+                "POSTGRES_APPEARANCE_CONNECTION_URL=postgresql://appearance\n"
+                "POSTGRES_DELIVERY_LABEL_CONNECTION_URL=postgresql://delivery\n"
+                "POSTGRES_DELIVERY_LABEL_SEARCH_CONNECTION_URL=postgresql://delivery-search\n"
+                "POSTGRES_ARAI_MASTERS_CONNECTION_URL=postgresql://masters\n",
+                encoding="utf-8",
+            )
+
+            old_values = {
+                key: os.environ.get(key)
+                for key in (
+                    "DATABASE_BACKEND",
+                    "DB_BACKEND",
+                    "ACCESS_DB_PATH",
+                    "POSTGRES_DSN",
+                    "POSTGRES_CONNECTION_URL",
+                    "POSTGRES_APPEARANCE_CONNECTION_URL",
+                    "POSTGRES_DELIVERY_LABEL_CONNECTION_URL",
+                    "POSTGRES_DELIVERY_LABEL_SEARCH_CONNECTION_URL",
+                    "POSTGRES_ARAI_MASTERS_CONNECTION_URL",
+                )
+            }
+            try:
+                for key in old_values:
+                    os.environ.pop(key, None)
+                config = AppConfig.load(base_dir)
+            finally:
+                for key, value in old_values.items():
+                    if value is None:
+                        os.environ.pop(key, None)
+                    else:
+                        os.environ[key] = value
+
+        self.assertEqual(config.postgres_appearance_dsn, "postgresql://appearance")
+        self.assertEqual(config.postgres_delivery_label_dsn, "postgresql://delivery")
+        self.assertEqual(config.postgres_delivery_label_search_dsn, "postgresql://delivery-search")
+        self.assertEqual(config.postgres_arai_masters_dsn, "postgresql://masters")
+
 
 if __name__ == "__main__":
     unittest.main()

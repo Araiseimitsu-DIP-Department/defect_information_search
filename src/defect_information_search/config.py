@@ -21,6 +21,10 @@ class AppConfig:
     access_db_path: Path
     database_backend: str = "access"
     postgres_dsn: str | None = None
+    postgres_appearance_dsn: str | None = None
+    postgres_delivery_label_dsn: str | None = None
+    postgres_delivery_label_search_dsn: str | None = None
+    postgres_arai_masters_dsn: str | None = None
     postgres_schema: str = "public"
 
     @classmethod
@@ -50,11 +54,34 @@ class AppConfig:
         postgres_dsn = (
             os.getenv("POSTGRES_CONNECTION_URL") or os.getenv("POSTGRES_DSN") or ""
         ).strip().strip('"') or None
+        postgres_appearance_dsn = (
+            os.getenv("POSTGRES_APPEARANCE_CONNECTION_URL") or postgres_dsn or ""
+        ).strip().strip('"') or None
+        postgres_delivery_label_dsn = (
+            os.getenv("POSTGRES_DELIVERY_LABEL_CONNECTION_URL") or postgres_dsn or ""
+        ).strip().strip('"') or None
+        postgres_delivery_label_search_dsn = (
+            os.getenv("POSTGRES_DELIVERY_LABEL_SEARCH_CONNECTION_URL")
+            or os.getenv("POSTGRES_PRODUCT_CATALOG_CONNECTION_URL")
+            or postgres_delivery_label_dsn
+            or postgres_dsn
+            or ""
+        ).strip().strip('"') or None
+        postgres_arai_masters_dsn = (
+            os.getenv("POSTGRES_ARAI_MASTERS_CONNECTION_URL")
+            or os.getenv("POSTGRES_PRODUCT_MASTER_CONNECTION_URL")
+            or postgres_dsn
+            or ""
+        ).strip().strip('"') or None
         postgres_schema = os.getenv("POSTGRES_SCHEMA", "public").strip().strip('"') or "public"
         return cls(
             access_db_path=Path(db_path),
             database_backend=database_backend,
             postgres_dsn=postgres_dsn,
+            postgres_appearance_dsn=postgres_appearance_dsn,
+            postgres_delivery_label_dsn=postgres_delivery_label_dsn,
+            postgres_delivery_label_search_dsn=postgres_delivery_label_search_dsn,
+            postgres_arai_masters_dsn=postgres_arai_masters_dsn,
             postgres_schema=postgres_schema,
         )
 

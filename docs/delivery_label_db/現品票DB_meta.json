@@ -1,0 +1,3402 @@
+{
+  "database_path": "\\\\192.168.1.200\\共有\\QRシステム\\Access\\現品票DB.accdb",
+  "driver_used": "Microsoft Access Driver (*.mdb, *.accdb)",
+  "tables": [
+    {
+      "name": "t_ExcelQR履歴",
+      "table_type": "TABLE",
+      "row_count": 0,
+      "row_count_error": null,
+      "primary_key": [],
+      "columns": [
+        {
+          "name": "日付時刻",
+          "access_type": "DATETIME",
+          "sql_data_type": 9,
+          "column_size": 19,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "TIMESTAMP"
+        },
+        {
+          "name": "QRコード",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 22,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(22)"
+        },
+        {
+          "name": "生産ロットID",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 7,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(7)"
+        },
+        {
+          "name": "日付",
+          "access_type": "DATETIME",
+          "sql_data_type": 9,
+          "column_size": 19,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "TIMESTAMP"
+        },
+        {
+          "name": "工程",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 2,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(2)"
+        },
+        {
+          "name": "位置",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 2,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(2)"
+        },
+        {
+          "name": "数量",
+          "access_type": "INTEGER",
+          "sql_data_type": 4,
+          "column_size": 10,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "INTEGER"
+        },
+        {
+          "name": "工程名",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 30,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(30)"
+        }
+      ],
+      "indexes": [],
+      "sample_headers": [
+        "日付時刻",
+        "QRコード",
+        "生産ロットID",
+        "日付",
+        "工程",
+        "位置",
+        "数量",
+        "工程名"
+      ],
+      "sample_rows": [],
+      "column_stats": []
+    },
+    {
+      "name": "t_Excel現品票履歴",
+      "table_type": "TABLE",
+      "row_count": 35817,
+      "row_count_error": null,
+      "primary_key": [],
+      "columns": [
+        {
+          "name": "生産ロットID",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 7,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(7)"
+        },
+        {
+          "name": "号機",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 5,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(5)"
+        },
+        {
+          "name": "品番",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 30,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(30)"
+        },
+        {
+          "name": "品名",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 30,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(30)"
+        },
+        {
+          "name": "客先",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 30,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(30)"
+        },
+        {
+          "name": "材質",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 50,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(50)"
+        },
+        {
+          "name": "材料ロットNO",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 30,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(30)"
+        },
+        {
+          "name": "数量",
+          "access_type": "INTEGER",
+          "sql_data_type": 4,
+          "column_size": 10,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "INTEGER"
+        },
+        {
+          "name": "備考",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 50,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(50)"
+        },
+        {
+          "name": "指示日",
+          "access_type": "DATETIME",
+          "sql_data_type": 9,
+          "column_size": 19,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "TIMESTAMP"
+        },
+        {
+          "name": "完了フラグ",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 1,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(1)"
+        }
+      ],
+      "indexes": [],
+      "sample_headers": [
+        "生産ロットID",
+        "号機",
+        "品番",
+        "品名",
+        "客先",
+        "材質",
+        "材料ロットNO",
+        "数量",
+        "備考",
+        "指示日",
+        "完了フラグ"
+      ],
+      "sample_rows": [
+        [
+          "E000001",
+          "AN",
+          "00575532-01",
+          "カラー 8×8.16",
+          "東京鋲兼",
+          "SUS303 φ8.0CM",
+          null,
+          3730,
+          null,
+          "2017-10-12T00:00:00",
+          null
+        ],
+        [
+          "E000002",
+          "AN",
+          "00575532-01",
+          "カラー 8×8.16",
+          "東京鋲兼",
+          "SUS303 φ8.0CM",
+          null,
+          1370,
+          null,
+          "2017-10-14T00:00:00",
+          null
+        ],
+        [
+          "E000003",
+          "AN",
+          "00575532-05",
+          "カラー 8×8.14",
+          "東京鋲兼",
+          "SUS303 φ8.0CM",
+          null,
+          2700,
+          null,
+          "2017-10-14T00:00:00",
+          null
+        ],
+        [
+          "E000004",
+          "AN-1",
+          "FA用リベット",
+          "FA用リベット",
+          "イワタボルト",
+          "SUS303Cu φ10.0D",
+          null,
+          10000,
+          null,
+          "2017-10-14T00:00:00",
+          null
+        ],
+        [
+          "E000005",
+          "AN-2",
+          "FA用リベット",
+          "FA用リベット",
+          "イワタボルト",
+          "SUS303Cu φ10.0D",
+          null,
+          10000,
+          null,
+          "2017-10-14T00:00:00",
+          null
+        ]
+      ],
+      "column_stats": [
+        {
+          "column": "生産ロットID",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "号機",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "品番",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "品名",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "客先",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "材質",
+          "null_count": 30,
+          "null_rate_pct": 0.1,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "材料ロットNO",
+          "null_count": 5028,
+          "null_rate_pct": 14.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "数量",
+          "null_count": 2,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "備考",
+          "null_count": 29613,
+          "null_rate_pct": 82.7,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "指示日",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "完了フラグ",
+          "null_count": 35817,
+          "null_rate_pct": 100.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        }
+      ]
+    },
+    {
+      "name": "t_ID番号",
+      "table_type": "TABLE",
+      "row_count": 1,
+      "row_count_error": null,
+      "primary_key": [],
+      "columns": [
+        {
+          "name": "ID",
+          "access_type": "COUNTER",
+          "sql_data_type": 4,
+          "column_size": 10,
+          "decimal_digits": 0,
+          "nullable": false,
+          "postgres_type_hint": "BIGSERIAL"
+        },
+        {
+          "name": "P番号",
+          "access_type": "INTEGER",
+          "sql_data_type": 4,
+          "column_size": 10,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "INTEGER"
+        },
+        {
+          "name": "E番号",
+          "access_type": "INTEGER",
+          "sql_data_type": 4,
+          "column_size": 10,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "INTEGER"
+        }
+      ],
+      "indexes": [],
+      "sample_headers": [
+        "ID",
+        "P番号",
+        "E番号"
+      ],
+      "sample_rows": [
+        [
+          1,
+          154797,
+          16664
+        ]
+      ],
+      "column_stats": [
+        {
+          "column": "ID",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "P番号",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "E番号",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        }
+      ]
+    },
+    {
+      "name": "t_QR履歴",
+      "table_type": "TABLE",
+      "row_count": 112500,
+      "row_count_error": null,
+      "primary_key": [],
+      "columns": [
+        {
+          "name": "日付時刻",
+          "access_type": "DATETIME",
+          "sql_data_type": 9,
+          "column_size": 19,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "TIMESTAMP"
+        },
+        {
+          "name": "QRコード",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 22,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(22)"
+        },
+        {
+          "name": "生産ロットID",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 7,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(7)"
+        },
+        {
+          "name": "日付",
+          "access_type": "DATETIME",
+          "sql_data_type": 9,
+          "column_size": 19,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "TIMESTAMP"
+        },
+        {
+          "name": "工程",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 2,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(2)"
+        },
+        {
+          "name": "位置",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 2,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(2)"
+        },
+        {
+          "name": "数量",
+          "access_type": "INTEGER",
+          "sql_data_type": 4,
+          "column_size": 10,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "INTEGER"
+        },
+        {
+          "name": "工程コード",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 2,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(2)"
+        },
+        {
+          "name": "工程名",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 30,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(30)"
+        },
+        {
+          "name": "更新フラグ",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 1,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(1)"
+        },
+        {
+          "name": "ID",
+          "access_type": "COUNTER",
+          "sql_data_type": 4,
+          "column_size": 10,
+          "decimal_digits": 0,
+          "nullable": false,
+          "postgres_type_hint": "BIGSERIAL"
+        }
+      ],
+      "indexes": [],
+      "sample_headers": [
+        "日付時刻",
+        "QRコード",
+        "生産ロットID",
+        "日付",
+        "工程",
+        "位置",
+        "数量",
+        "工程コード",
+        "工程名",
+        "更新フラグ",
+        "ID"
+      ],
+      "sample_rows": [
+        [
+          "2026-05-22T08:40:22",
+          "P153419260519076A06003",
+          "P153419",
+          "2026-05-22T00:00:00",
+          "1",
+          "1",
+          1534,
+          "01",
+          "洗浄",
+          "1",
+          107074
+        ],
+        [
+          "2026-05-22T08:41:23",
+          "P153479260520035A06003",
+          "P153479",
+          "2026-05-22T00:00:00",
+          "1",
+          "1",
+          1857,
+          "01",
+          "洗浄",
+          "1",
+          107075
+        ],
+        [
+          "2026-05-22T08:49:51",
+          "P152694260428041A00414",
+          "P152694",
+          "2026-05-22T00:00:00",
+          "3",
+          "0",
+          1715,
+          "03",
+          "外観検査",
+          "1",
+          107076
+        ],
+        [
+          "2026-05-22T09:04:02",
+          "P153281260516058A04549",
+          "P153281",
+          "2026-05-22T00:00:00",
+          "1",
+          "1",
+          1882,
+          "01",
+          "洗浄",
+          "1",
+          107077
+        ],
+        [
+          "2026-05-22T09:05:00",
+          "P153336260516058A04549",
+          "P153336",
+          "2026-05-22T00:00:00",
+          "1",
+          "1",
+          1487,
+          "01",
+          "洗浄",
+          "1",
+          107078
+        ]
+      ],
+      "column_stats": [
+        {
+          "column": "日付時刻",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "QRコード",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "生産ロットID",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "日付",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "工程",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "位置",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "数量",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "工程コード",
+          "null_count": 12,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "工程名",
+          "null_count": 12,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "更新フラグ",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "ID",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        }
+      ]
+    },
+    {
+      "name": "t_QR履歴(backup_260521)",
+      "table_type": "TABLE",
+      "row_count": 106967,
+      "row_count_error": null,
+      "primary_key": [],
+      "columns": [
+        {
+          "name": "日付時刻",
+          "access_type": "DATETIME",
+          "sql_data_type": 9,
+          "column_size": 19,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "TIMESTAMP"
+        },
+        {
+          "name": "QRコード",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 22,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(22)"
+        },
+        {
+          "name": "生産ロットID",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 7,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(7)"
+        },
+        {
+          "name": "日付",
+          "access_type": "DATETIME",
+          "sql_data_type": 9,
+          "column_size": 19,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "TIMESTAMP"
+        },
+        {
+          "name": "工程",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 2,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(2)"
+        },
+        {
+          "name": "位置",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 2,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(2)"
+        },
+        {
+          "name": "数量",
+          "access_type": "INTEGER",
+          "sql_data_type": 4,
+          "column_size": 10,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "INTEGER"
+        },
+        {
+          "name": "工程コード",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 2,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(2)"
+        },
+        {
+          "name": "工程名",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 30,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(30)"
+        },
+        {
+          "name": "更新フラグ",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 1,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(1)"
+        }
+      ],
+      "indexes": [],
+      "sample_headers": [
+        "日付時刻",
+        "QRコード",
+        "生産ロットID",
+        "日付",
+        "工程",
+        "位置",
+        "数量",
+        "工程コード",
+        "工程名",
+        "更新フラグ"
+      ],
+      "sample_rows": [
+        [
+          "2025-02-06T08:45:47",
+          "P131807250203048A01780",
+          "P131807",
+          "2025-02-06T00:00:00",
+          "3",
+          "0",
+          0,
+          "--",
+          "外観検査  1",
+          "1"
+        ],
+        [
+          "2025-02-06T08:50:02",
+          "P131754250202044A04740",
+          "P131754",
+          "2025-02-06T00:00:00",
+          "2",
+          "1",
+          0,
+          "04",
+          "磁気ﾊﾞﾚﾙ 4槽1  ASK8",
+          "1"
+        ],
+        [
+          "2025-02-06T08:50:52",
+          "P131753250202043A04740",
+          "P131753",
+          "2025-02-06T00:00:00",
+          "2",
+          "1",
+          0,
+          "04",
+          "磁気ﾊﾞﾚﾙ 4槽1  ASK8",
+          "1"
+        ],
+        [
+          "2025-02-06T08:51:36",
+          "P131766250202061A04740",
+          "P131766",
+          "2025-02-06T00:00:00",
+          "2",
+          "1",
+          0,
+          "04",
+          "磁気ﾊﾞﾚﾙ 4槽1  ASK8",
+          "1"
+        ],
+        [
+          "2025-02-06T08:53:46",
+          "P130915250117064A04549",
+          "P130915",
+          "2025-02-06T00:00:00",
+          "1",
+          "1",
+          1399,
+          "01",
+          "洗浄",
+          "1"
+        ]
+      ],
+      "column_stats": [
+        {
+          "column": "日付時刻",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "QRコード",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "生産ロットID",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "日付",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "工程",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "位置",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "数量",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "工程コード",
+          "null_count": 10,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "工程名",
+          "null_count": 10,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "更新フラグ",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        }
+      ]
+    },
+    {
+      "name": "t_QR履歴Tmp",
+      "table_type": "TABLE",
+      "row_count": 44867,
+      "row_count_error": null,
+      "primary_key": [],
+      "columns": [
+        {
+          "name": "日付時刻",
+          "access_type": "DATETIME",
+          "sql_data_type": 9,
+          "column_size": 19,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "TIMESTAMP"
+        },
+        {
+          "name": "QRコード",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 22,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(22)"
+        },
+        {
+          "name": "生産ロットID",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 7,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(7)"
+        },
+        {
+          "name": "日付",
+          "access_type": "DATETIME",
+          "sql_data_type": 9,
+          "column_size": 19,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "TIMESTAMP"
+        },
+        {
+          "name": "工程",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 2,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(2)"
+        },
+        {
+          "name": "位置",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 2,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(2)"
+        },
+        {
+          "name": "数量",
+          "access_type": "INTEGER",
+          "sql_data_type": 4,
+          "column_size": 10,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "INTEGER"
+        },
+        {
+          "name": "更新フラグ",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 1,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(1)"
+        },
+        {
+          "name": "TNo",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 1,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(1)"
+        }
+      ],
+      "indexes": [],
+      "sample_headers": [
+        "日付時刻",
+        "QRコード",
+        "生産ロットID",
+        "日付",
+        "工程",
+        "位置",
+        "数量",
+        "更新フラグ",
+        "TNo"
+      ],
+      "sample_rows": [
+        [
+          "2025-01-06T08:48:34",
+          "P129215241130065A01780",
+          "P129215",
+          "2025-01-06T00:00:00",
+          "9",
+          "0",
+          0,
+          "A",
+          "4"
+        ],
+        [
+          "2025-01-06T08:48:43",
+          "P129159241129065A01780",
+          "P129159",
+          "2025-01-06T00:00:00",
+          "9",
+          "0",
+          0,
+          "A",
+          "4"
+        ],
+        [
+          "2025-01-06T08:48:51",
+          "P129105241128065A01780",
+          "P129105",
+          "2025-01-06T00:00:00",
+          "9",
+          "0",
+          0,
+          "A",
+          "4"
+        ],
+        [
+          "2025-01-06T08:49:00",
+          "P129049241127065A01780",
+          "P129049",
+          "2025-01-06T00:00:00",
+          "9",
+          "0",
+          0,
+          "A",
+          "4"
+        ],
+        [
+          "2025-01-06T08:49:09",
+          "P128996241126065A01780",
+          "P128996",
+          "2025-01-06T00:00:00",
+          "9",
+          "0",
+          0,
+          "A",
+          "4"
+        ]
+      ],
+      "column_stats": [
+        {
+          "column": "日付時刻",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "QRコード",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "生産ロットID",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "日付",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "工程",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "位置",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "数量",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "更新フラグ",
+          "null_count": 1,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "TNo",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        }
+      ]
+    },
+    {
+      "name": "t_エラーログ",
+      "table_type": "TABLE",
+      "row_count": 16564,
+      "row_count_error": null,
+      "primary_key": [],
+      "columns": [
+        {
+          "name": "ID",
+          "access_type": "COUNTER",
+          "sql_data_type": 4,
+          "column_size": 10,
+          "decimal_digits": 0,
+          "nullable": false,
+          "postgres_type_hint": "BIGSERIAL"
+        },
+        {
+          "name": "日付",
+          "access_type": "DATETIME",
+          "sql_data_type": 9,
+          "column_size": 19,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "TIMESTAMP"
+        },
+        {
+          "name": "生産ロットID",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 7,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(7)"
+        },
+        {
+          "name": "エラー内容",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 20,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(20)"
+        }
+      ],
+      "indexes": [],
+      "sample_headers": [
+        "ID",
+        "日付",
+        "生産ロットID",
+        "エラー内容"
+      ],
+      "sample_rows": [
+        [
+          1757,
+          "2019-07-10T00:00:00",
+          "P032278",
+          "工程番号逆転 現在：6→ 今回：3"
+        ],
+        [
+          1758,
+          "2019-07-10T00:00:00",
+          "P031854",
+          "工程番号逆転 現在：4→ 今回：3"
+        ],
+        [
+          1759,
+          "2019-07-11T00:00:00",
+          "P032045",
+          "工程番号逆転 現在：5→ 今回：2"
+        ],
+        [
+          1760,
+          "2019-07-11T00:00:00",
+          "P032260",
+          "工程番号逆転 現在：4→ 今回：2"
+        ],
+        [
+          1761,
+          "2019-07-11T00:00:00",
+          "P032253",
+          "工程番号逆転 現在：4→ 今回：2"
+        ]
+      ],
+      "column_stats": [
+        {
+          "column": "ID",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "日付",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "生産ロットID",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "エラー内容",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        }
+      ]
+    },
+    {
+      "name": "t_ロット完了理由",
+      "table_type": "TABLE",
+      "row_count": 6,
+      "row_count_error": null,
+      "primary_key": [],
+      "columns": [
+        {
+          "name": "理由コード",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 1,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(1)"
+        },
+        {
+          "name": "理由",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 5,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(5)"
+        }
+      ],
+      "indexes": [],
+      "sample_headers": [
+        "理由コード",
+        "理由"
+      ],
+      "sample_rows": [
+        [
+          "0",
+          "通常"
+        ],
+        [
+          "1",
+          "統合"
+        ],
+        [
+          "2",
+          "不適合"
+        ],
+        [
+          "3",
+          "未使用"
+        ],
+        [
+          "4",
+          "廃棄"
+        ]
+      ],
+      "column_stats": [
+        {
+          "column": "理由コード",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "理由",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        }
+      ]
+    },
+    {
+      "name": "t_作業履歴",
+      "table_type": "TABLE",
+      "row_count": 1,
+      "row_count_error": null,
+      "primary_key": [],
+      "columns": [
+        {
+          "name": "ID",
+          "access_type": "COUNTER",
+          "sql_data_type": 4,
+          "column_size": 10,
+          "decimal_digits": 0,
+          "nullable": false,
+          "postgres_type_hint": "BIGSERIAL"
+        },
+        {
+          "name": "ロット数数値検査",
+          "access_type": "INTEGER",
+          "sql_data_type": 4,
+          "column_size": 10,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "INTEGER"
+        },
+        {
+          "name": "ロット数外観検査",
+          "access_type": "INTEGER",
+          "sql_data_type": 4,
+          "column_size": 10,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "INTEGER"
+        },
+        {
+          "name": "ロット数梱包",
+          "access_type": "INTEGER",
+          "sql_data_type": 4,
+          "column_size": 10,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "INTEGER"
+        },
+        {
+          "name": "ロット数洗浄",
+          "access_type": "INTEGER",
+          "sql_data_type": 4,
+          "column_size": 10,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "INTEGER"
+        },
+        {
+          "name": "ロット数二次作業",
+          "access_type": "INTEGER",
+          "sql_data_type": 4,
+          "column_size": 10,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "INTEGER"
+        },
+        {
+          "name": "個数数値検査",
+          "access_type": "INTEGER",
+          "sql_data_type": 4,
+          "column_size": 10,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "INTEGER"
+        },
+        {
+          "name": "個数外観検査",
+          "access_type": "INTEGER",
+          "sql_data_type": 4,
+          "column_size": 10,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "INTEGER"
+        },
+        {
+          "name": "個数梱包",
+          "access_type": "INTEGER",
+          "sql_data_type": 4,
+          "column_size": 10,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "INTEGER"
+        },
+        {
+          "name": "個数洗浄",
+          "access_type": "INTEGER",
+          "sql_data_type": 4,
+          "column_size": 10,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "INTEGER"
+        },
+        {
+          "name": "個数二次作業",
+          "access_type": "INTEGER",
+          "sql_data_type": 4,
+          "column_size": 10,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "INTEGER"
+        },
+        {
+          "name": "金額数値検査",
+          "access_type": "DOUBLE",
+          "sql_data_type": 8,
+          "column_size": 53,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "DOUBLE PRECISION"
+        },
+        {
+          "name": "金額外観検査",
+          "access_type": "DOUBLE",
+          "sql_data_type": 8,
+          "column_size": 53,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "DOUBLE PRECISION"
+        },
+        {
+          "name": "金額梱包",
+          "access_type": "DOUBLE",
+          "sql_data_type": 8,
+          "column_size": 53,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "DOUBLE PRECISION"
+        },
+        {
+          "name": "金額洗浄",
+          "access_type": "DOUBLE",
+          "sql_data_type": 8,
+          "column_size": 53,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "DOUBLE PRECISION"
+        },
+        {
+          "name": "金額二次作業",
+          "access_type": "DOUBLE",
+          "sql_data_type": 8,
+          "column_size": 53,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "DOUBLE PRECISION"
+        },
+        {
+          "name": "稼働日数",
+          "access_type": "INTEGER",
+          "sql_data_type": 4,
+          "column_size": 10,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "INTEGER"
+        }
+      ],
+      "indexes": [],
+      "sample_headers": [
+        "ID",
+        "ロット数数値検査",
+        "ロット数外観検査",
+        "ロット数梱包",
+        "ロット数洗浄",
+        "ロット数二次作業",
+        "個数数値検査",
+        "個数外観検査",
+        "個数梱包",
+        "個数洗浄",
+        "個数二次作業",
+        "金額数値検査",
+        "金額外観検査",
+        "金額梱包",
+        "金額洗浄",
+        "金額二次作業",
+        "稼働日数"
+      ],
+      "sample_rows": [
+        [
+          1,
+          1489,
+          1397,
+          1375,
+          1553,
+          221,
+          2700000,
+          2658688,
+          2731421,
+          2723137,
+          439158,
+          92607775.0,
+          89861464.0,
+          89184398.0,
+          93153324.0,
+          11924222.0,
+          20
+        ]
+      ],
+      "column_stats": [
+        {
+          "column": "ID",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "ロット数数値検査",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "ロット数外観検査",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "ロット数梱包",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "ロット数洗浄",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "ロット数二次作業",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "個数数値検査",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "個数外観検査",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "個数梱包",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "個数洗浄",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "個数二次作業",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "金額数値検査",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "金額外観検査",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "金額梱包",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "金額洗浄",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "金額二次作業",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "稼働日数",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        }
+      ]
+    },
+    {
+      "name": "t_修正ログ",
+      "table_type": "TABLE",
+      "row_count": 9927,
+      "row_count_error": null,
+      "primary_key": [],
+      "columns": [
+        {
+          "name": "ID",
+          "access_type": "COUNTER",
+          "sql_data_type": 4,
+          "column_size": 10,
+          "decimal_digits": 0,
+          "nullable": false,
+          "postgres_type_hint": "BIGSERIAL"
+        },
+        {
+          "name": "日付",
+          "access_type": "DATETIME",
+          "sql_data_type": 9,
+          "column_size": 19,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "TIMESTAMP"
+        },
+        {
+          "name": "生産ロットID",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 7,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(7)"
+        },
+        {
+          "name": "項目",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 5,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(5)"
+        },
+        {
+          "name": "内容",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 15,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(15)"
+        }
+      ],
+      "indexes": [],
+      "sample_headers": [
+        "ID",
+        "日付",
+        "生産ロットID",
+        "項目",
+        "内容"
+      ],
+      "sample_rows": [
+        [
+          32,
+          "2019-07-10T00:00:00",
+          "P032242",
+          "品質11",
+          "不適合品→良品"
+        ],
+        [
+          33,
+          "2019-07-10T00:00:00",
+          "P032276",
+          "品質11",
+          "不適合品→良品"
+        ],
+        [
+          34,
+          "2019-07-10T00:00:00",
+          "P031821",
+          "完了",
+          "仕掛梱包 → 完了"
+        ],
+        [
+          35,
+          "2019-07-10T00:00:00",
+          "P031838",
+          "完了",
+          "無電解Niﾒ → 完了"
+        ],
+        [
+          36,
+          "2019-07-10T00:00:00",
+          "P031838",
+          "数量修正",
+          "1600 → 0"
+        ]
+      ],
+      "column_stats": [
+        {
+          "column": "ID",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "日付",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "生産ロットID",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "項目",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "内容",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        }
+      ]
+    },
+    {
+      "name": "t_分割ロット",
+      "table_type": "TABLE",
+      "row_count": 7595,
+      "row_count_error": null,
+      "primary_key": [],
+      "columns": [
+        {
+          "name": "ID",
+          "access_type": "COUNTER",
+          "sql_data_type": 4,
+          "column_size": 10,
+          "decimal_digits": 0,
+          "nullable": false,
+          "postgres_type_hint": "BIGSERIAL"
+        },
+        {
+          "name": "元ロットID",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 7,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(7)"
+        },
+        {
+          "name": "新ロットID",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 7,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(7)"
+        },
+        {
+          "name": "元数量",
+          "access_type": "INTEGER",
+          "sql_data_type": 4,
+          "column_size": 10,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "INTEGER"
+        },
+        {
+          "name": "区分",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 1,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(1)"
+        },
+        {
+          "name": "作成日",
+          "access_type": "DATETIME",
+          "sql_data_type": 9,
+          "column_size": 19,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "TIMESTAMP"
+        }
+      ],
+      "indexes": [],
+      "sample_headers": [
+        "ID",
+        "元ロットID",
+        "新ロットID",
+        "元数量",
+        "区分",
+        "作成日"
+      ],
+      "sample_rows": [
+        [
+          2,
+          "P032299",
+          "P032388",
+          581,
+          "1",
+          "2019-07-15T00:00:00"
+        ],
+        [
+          3,
+          "P032371",
+          "P032465",
+          790,
+          "1",
+          "2019-07-17T00:00:00"
+        ],
+        [
+          4,
+          "P032337",
+          "P032465",
+          809,
+          "1",
+          "2019-07-17T00:00:00"
+        ],
+        [
+          5,
+          "P031294",
+          "P033082",
+          4000,
+          "0",
+          "2019-07-18T00:00:00"
+        ],
+        [
+          6,
+          "P031218",
+          "P033217",
+          820,
+          "0",
+          "2019-07-22T00:00:00"
+        ]
+      ],
+      "column_stats": [
+        {
+          "column": "ID",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "元ロットID",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "新ロットID",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "元数量",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "区分",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "作成日",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        }
+      ]
+    },
+    {
+      "name": "t_工程マスタ",
+      "table_type": "TABLE",
+      "row_count": 5,
+      "row_count_error": null,
+      "primary_key": [],
+      "columns": [
+        {
+          "name": "工程コード",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 2,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(2)"
+        },
+        {
+          "name": "工程名",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 5,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(5)"
+        }
+      ],
+      "indexes": [],
+      "sample_headers": [
+        "工程コード",
+        "工程名"
+      ],
+      "sample_rows": [
+        [
+          "--",
+          "その他"
+        ],
+        [
+          "01",
+          "洗浄"
+        ],
+        [
+          "02",
+          "数値検査"
+        ],
+        [
+          "03",
+          "外観検査"
+        ],
+        [
+          "99",
+          "梱包"
+        ]
+      ],
+      "column_stats": [
+        {
+          "column": "工程コード",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "工程名",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        }
+      ]
+    },
+    {
+      "name": "t_数量差異",
+      "table_type": "TABLE",
+      "row_count": 78357,
+      "row_count_error": null,
+      "primary_key": [],
+      "columns": [
+        {
+          "name": "ID",
+          "access_type": "COUNTER",
+          "sql_data_type": 4,
+          "column_size": 10,
+          "decimal_digits": 0,
+          "nullable": false,
+          "postgres_type_hint": "BIGSERIAL"
+        },
+        {
+          "name": "計量日",
+          "access_type": "DATETIME",
+          "sql_data_type": 9,
+          "column_size": 19,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "TIMESTAMP"
+        },
+        {
+          "name": "出荷日",
+          "access_type": "DATETIME",
+          "sql_data_type": 9,
+          "column_size": 19,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "TIMESTAMP"
+        },
+        {
+          "name": "号機",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 4,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(4)"
+        },
+        {
+          "name": "生産ロットID",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 7,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(7)"
+        },
+        {
+          "name": "品番",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 30,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(30)"
+        },
+        {
+          "name": "品名",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 30,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(30)"
+        },
+        {
+          "name": "出荷数",
+          "access_type": "INTEGER",
+          "sql_data_type": 4,
+          "column_size": 10,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "INTEGER"
+        },
+        {
+          "name": "計量数",
+          "access_type": "INTEGER",
+          "sql_data_type": 4,
+          "column_size": 10,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "INTEGER"
+        },
+        {
+          "name": "差異",
+          "access_type": "DOUBLE",
+          "sql_data_type": 8,
+          "column_size": 53,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "DOUBLE PRECISION"
+        }
+      ],
+      "indexes": [],
+      "sample_headers": [
+        "ID",
+        "計量日",
+        "出荷日",
+        "号機",
+        "生産ロットID",
+        "品番",
+        "品名",
+        "出荷数",
+        "計量数",
+        "差異"
+      ],
+      "sample_rows": [
+        [
+          2678,
+          "2019-09-02T00:00:00",
+          "2019-09-01T00:00:00",
+          "B-3",
+          "P034533",
+          "08131-01010",
+          "ﾄﾞﾗｲﾊﾞ",
+          1050,
+          1041,
+          -0.008571428571428572
+        ],
+        [
+          2679,
+          "2019-09-06T00:00:00",
+          "2019-09-01T00:00:00",
+          "B-6",
+          "P034535",
+          "P4-0011",
+          "出力軸",
+          1140,
+          1153,
+          0.011403508771929825
+        ],
+        [
+          2680,
+          "2019-09-02T00:00:00",
+          "2019-09-01T00:00:00",
+          "C-1",
+          "P034536",
+          "16R-002",
+          "ﾒﾀﾙﾊｳｽ(1)",
+          760,
+          761,
+          0.0013157894736842105
+        ],
+        [
+          2681,
+          "2019-09-16T00:00:00",
+          "2019-09-01T00:00:00",
+          "C-5",
+          "P034537",
+          "JA000420",
+          "PIN",
+          2280,
+          2290,
+          0.0043859649122807015
+        ],
+        [
+          2682,
+          "2019-09-02T00:00:00",
+          "2019-09-01T00:00:00",
+          "C-7",
+          "P034538",
+          "14050AB190-FZ",
+          "ﾊﾟｲﾌﾟ4",
+          670,
+          690,
+          0.029850746268656716
+        ]
+      ],
+      "column_stats": [
+        {
+          "column": "ID",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "計量日",
+          "null_count": 22300,
+          "null_rate_pct": 28.5,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "出荷日",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "号機",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "生産ロットID",
+          "null_count": 22300,
+          "null_rate_pct": 28.5,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "品番",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "品名",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "出荷数",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "計量数",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "差異",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        }
+      ]
+    },
+    {
+      "name": "t_現品票不具合内容",
+      "table_type": "TABLE",
+      "row_count": 165,
+      "row_count_error": null,
+      "primary_key": [],
+      "columns": [
+        {
+          "name": "生産ロットID",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 7,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(7)"
+        },
+        {
+          "name": "不具合内容",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 15,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(15)"
+        },
+        {
+          "name": "処置内容",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 15,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(15)"
+        },
+        {
+          "name": "処置済",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 1,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(1)"
+        }
+      ],
+      "indexes": [],
+      "sample_headers": [
+        "生産ロットID",
+        "不具合内容",
+        "処置内容",
+        "処置済"
+      ],
+      "sample_rows": [
+        [
+          "E009514",
+          "φ6.0部(-)混入。",
+          "マイクロ検",
+          "済"
+        ],
+        [
+          "E010649",
+          "穴小",
+          "PG検",
+          "済"
+        ],
+        [
+          "P056637",
+          "バリ・切粉からみ",
+          "ピンセット・刃物で取る",
+          "済"
+        ],
+        [
+          "P057031",
+          "穴（+）NG混入",
+          "PG1.514検査",
+          "済"
+        ],
+        [
+          "P058646",
+          "径プラス",
+          "マイクロ",
+          "済"
+        ]
+      ],
+      "column_stats": [
+        {
+          "column": "生産ロットID",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "不具合内容",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "処置内容",
+          "null_count": 2,
+          "null_rate_pct": 1.2,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "処置済",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        }
+      ]
+    },
+    {
+      "name": "t_現品票履歴",
+      "table_type": "TABLE",
+      "row_count": 135843,
+      "row_count_error": null,
+      "primary_key": [],
+      "columns": [
+        {
+          "name": "生産ロットID",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 7,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(7)"
+        },
+        {
+          "name": "号機",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 5,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(5)"
+        },
+        {
+          "name": "品番",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 30,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(30)"
+        },
+        {
+          "name": "品名",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 30,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(30)"
+        },
+        {
+          "name": "客先",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 30,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(30)"
+        },
+        {
+          "name": "材質",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 50,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(50)"
+        },
+        {
+          "name": "材料ロットNO",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 30,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(30)"
+        },
+        {
+          "name": "機械担当者",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 10,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(10)"
+        },
+        {
+          "name": "営業担当者",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 5,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(5)"
+        },
+        {
+          "name": "数量",
+          "access_type": "INTEGER",
+          "sql_data_type": 4,
+          "column_size": 10,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "INTEGER"
+        },
+        {
+          "name": "現在工程名",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 30,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(30)"
+        },
+        {
+          "name": "現在工程コード",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 2,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(2)"
+        },
+        {
+          "name": "工程2",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 30,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(30)"
+        },
+        {
+          "name": "工程3",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 30,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(30)"
+        },
+        {
+          "name": "工程4",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 30,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(30)"
+        },
+        {
+          "name": "工程5",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 30,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(30)"
+        },
+        {
+          "name": "工程6",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 30,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(30)"
+        },
+        {
+          "name": "工程7",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 30,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(30)"
+        },
+        {
+          "name": "工程8",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 30,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(30)"
+        },
+        {
+          "name": "工程9",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 30,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(30)"
+        },
+        {
+          "name": "現在工程番号",
+          "access_type": "INTEGER",
+          "sql_data_type": 4,
+          "column_size": 10,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "INTEGER"
+        },
+        {
+          "name": "表面処理工程番号",
+          "access_type": "INTEGER",
+          "sql_data_type": 4,
+          "column_size": 10,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "INTEGER"
+        },
+        {
+          "name": "位置",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 2,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(2)"
+        },
+        {
+          "name": "品番ID",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 6,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(6)"
+        },
+        {
+          "name": "QRコード",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 30,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(30)"
+        },
+        {
+          "name": "備考",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 30,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(30)"
+        },
+        {
+          "name": "指示日",
+          "access_type": "DATETIME",
+          "sql_data_type": 9,
+          "column_size": 19,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "TIMESTAMP"
+        },
+        {
+          "name": "印刷日",
+          "access_type": "DATETIME",
+          "sql_data_type": 9,
+          "column_size": 19,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "TIMESTAMP"
+        },
+        {
+          "name": "完了日",
+          "access_type": "DATETIME",
+          "sql_data_type": 9,
+          "column_size": 19,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "TIMESTAMP"
+        },
+        {
+          "name": "発行フラグ",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 1,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(1)"
+        },
+        {
+          "name": "不適合品フラグ",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 1,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(1)"
+        },
+        {
+          "name": "不適合品数量",
+          "access_type": "INTEGER",
+          "sql_data_type": 4,
+          "column_size": 10,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "INTEGER"
+        },
+        {
+          "name": "処理済フラグ",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 1,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(1)"
+        },
+        {
+          "name": "完了フラグ",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 1,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(1)"
+        },
+        {
+          "name": "工程2備考",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 20,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(20)"
+        },
+        {
+          "name": "工程3備考",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 20,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(20)"
+        },
+        {
+          "name": "工程4備考",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 20,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(20)"
+        },
+        {
+          "name": "工程5備考",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 20,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(20)"
+        },
+        {
+          "name": "工程6備考",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 20,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(20)"
+        },
+        {
+          "name": "工程7備考",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 20,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(20)"
+        },
+        {
+          "name": "工程8備考",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 20,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(20)"
+        },
+        {
+          "name": "工程9備考",
+          "access_type": "VARCHAR",
+          "sql_data_type": -9,
+          "column_size": 20,
+          "decimal_digits": null,
+          "nullable": true,
+          "postgres_type_hint": "VARCHAR(20)"
+        },
+        {
+          "name": "材料識別",
+          "access_type": "INTEGER",
+          "sql_data_type": 4,
+          "column_size": 10,
+          "decimal_digits": 0,
+          "nullable": true,
+          "postgres_type_hint": "INTEGER"
+        }
+      ],
+      "indexes": [],
+      "sample_headers": [
+        "生産ロットID",
+        "号機",
+        "品番",
+        "品名",
+        "客先",
+        "材質",
+        "材料ロットNO",
+        "機械担当者",
+        "営業担当者",
+        "数量",
+        "現在工程名",
+        "現在工程コード",
+        "工程2",
+        "工程3",
+        "工程4",
+        "工程5",
+        "工程6",
+        "工程7",
+        "工程8",
+        "工程9",
+        "現在工程番号",
+        "表面処理工程番号",
+        "位置",
+        "品番ID",
+        "QRコード",
+        "備考",
+        "指示日",
+        "印刷日",
+        "完了日",
+        "発行フラグ",
+        "不適合品フラグ",
+        "不適合品数量",
+        "処理済フラグ",
+        "完了フラグ",
+        "工程2備考",
+        "工程3備考",
+        "工程4備考",
+        "工程5備考",
+        "工程6備考",
+        "工程7備考",
+        "工程8備考",
+        "工程9備考",
+        "材料識別"
+      ],
+      "sample_rows": [
+        [
+          "E001319",
+          "TK",
+          "AA20053",
+          "ｻﾗﾊﾞﾈﾖｳｽﾍﾟｰｻB",
+          "三央工業",
+          "SUS304 φ19.0G  2m",
+          null,
+          null,
+          "名雲",
+          20,
+          "完了",
+          "EN",
+          "数値検査",
+          "外観検査",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          2,
+          0,
+          null,
+          "A04270",
+          null,
+          null,
+          "2018-06-07T00:00:00",
+          null,
+          "2019-12-12T00:00:00",
+          null,
+          null,
+          0,
+          null,
+          "9",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "E001930",
+          "AN",
+          "3PH2481400060",
+          "スペーサーFPC",
+          "トラストパーツ",
+          "SUS303 φ5.0CM",
+          null,
+          null,
+          "井出",
+          1145,
+          "完了",
+          "EN",
+          "数値検査",
+          "外観検査",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          10,
+          0,
+          "0",
+          "A00894",
+          null,
+          "分割ロット",
+          "2018-08-08T00:00:00",
+          null,
+          "2019-09-10T00:00:00",
+          null,
+          null,
+          0,
+          null,
+          "0",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "E002979",
+          "IN",
+          "026K81210",
+          "SCREW",
+          "サノハツ",
+          "ASK3500A φ8.0CM",
+          null,
+          null,
+          "名雲",
+          1379,
+          "完了",
+          "EN",
+          "数値検査",
+          "外観検査",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          10,
+          0,
+          "0",
+          "A00170",
+          null,
+          "分割ロット",
+          "2018-10-15T00:00:00",
+          null,
+          "2019-09-09T00:00:00",
+          null,
+          null,
+          0,
+          null,
+          "0",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "E002980",
+          "IN",
+          "026K81210",
+          "SCREW",
+          "サノハツ",
+          "ASK3500A φ8.0CM",
+          null,
+          null,
+          "名雲",
+          2606,
+          "完了",
+          "EN",
+          "数値検査",
+          "外観検査",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          10,
+          0,
+          "0",
+          "A00170",
+          null,
+          null,
+          "2018-10-18T00:00:00",
+          null,
+          "2019-10-18T00:00:00",
+          null,
+          null,
+          0,
+          null,
+          "0",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "E003112",
+          "IN",
+          "E-VMS8350",
+          "Tray Roller Shaft",
+          "山一精工",
+          "SUS303 φ1.5G  2.1m",
+          null,
+          null,
+          "名雲",
+          17400,
+          "完了",
+          "EN",
+          "数値検査",
+          "外観検査",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          3,
+          0,
+          null,
+          "A02376",
+          null,
+          null,
+          "2018-10-30T00:00:00",
+          null,
+          "2022-10-06T00:00:00",
+          null,
+          null,
+          0,
+          null,
+          "4",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      ],
+      "column_stats": [
+        {
+          "column": "生産ロットID",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "号機",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "品番",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "品名",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "客先",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "材質",
+          "null_count": 4,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "材料ロットNO",
+          "null_count": 1861,
+          "null_rate_pct": 1.4,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "機械担当者",
+          "null_count": 1554,
+          "null_rate_pct": 1.1,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "営業担当者",
+          "null_count": 20,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "数量",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "現在工程名",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "現在工程コード",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "工程2",
+          "null_count": 20,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "工程3",
+          "null_count": 21,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "工程4",
+          "null_count": 63701,
+          "null_rate_pct": 46.9,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "工程5",
+          "null_count": 107190,
+          "null_rate_pct": 78.9,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "工程6",
+          "null_count": 109516,
+          "null_rate_pct": 80.6,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "工程7",
+          "null_count": 112870,
+          "null_rate_pct": 83.1,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "工程8",
+          "null_count": 117757,
+          "null_rate_pct": 86.7,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "工程9",
+          "null_count": 117897,
+          "null_rate_pct": 86.8,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "現在工程番号",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "表面処理工程番号",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "位置",
+          "null_count": 4049,
+          "null_rate_pct": 3.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "品番ID",
+          "null_count": 19,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "QRコード",
+          "null_count": 1866,
+          "null_rate_pct": 1.4,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "備考",
+          "null_count": 119239,
+          "null_rate_pct": 87.8,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "指示日",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "印刷日",
+          "null_count": 1518,
+          "null_rate_pct": 1.1,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "完了日",
+          "null_count": 1113,
+          "null_rate_pct": 0.8,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "発行フラグ",
+          "null_count": 19246,
+          "null_rate_pct": 14.2,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "不適合品フラグ",
+          "null_count": 135575,
+          "null_rate_pct": 99.8,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "不適合品数量",
+          "null_count": 0,
+          "null_rate_pct": 0.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "処理済フラグ",
+          "null_count": 131807,
+          "null_rate_pct": 97.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "完了フラグ",
+          "null_count": 1112,
+          "null_rate_pct": 0.8,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "工程2備考",
+          "null_count": 11934,
+          "null_rate_pct": 8.8,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "工程3備考",
+          "null_count": 56563,
+          "null_rate_pct": 41.6,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "工程4備考",
+          "null_count": 69584,
+          "null_rate_pct": 51.2,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "工程5備考",
+          "null_count": 113023,
+          "null_rate_pct": 83.2,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "工程6備考",
+          "null_count": 117809,
+          "null_rate_pct": 86.7,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "工程7備考",
+          "null_count": 118142,
+          "null_rate_pct": 87.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "工程8備考",
+          "null_count": 118163,
+          "null_rate_pct": 87.0,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "工程9備考",
+          "null_count": 117692,
+          "null_rate_pct": 86.6,
+          "unique_count": null,
+          "unique_rate_pct": null
+        },
+        {
+          "column": "材料識別",
+          "null_count": 18483,
+          "null_rate_pct": 13.6,
+          "unique_count": null,
+          "unique_rate_pct": null
+        }
+      ]
+    }
+  ],
+  "views_and_queries": [],
+  "relationships": [],
+  "vba_modules": [],
+  "warnings": [
+    "FK 取得スキップ: t_ExcelQR履歴 — ('IM001', '[IM001] [Microsoft][ODBC Driver Manager] ドライバーはこの関数をサポートしていません。 (0) (SQLForeignKeys)')",
+    "FK 取得スキップ: t_Excel現品票履歴 — ('IM001', '[IM001] [Microsoft][ODBC Driver Manager] ドライバーはこの関数をサポートしていません。 (0) (SQLForeignKeys)')",
+    "FK 取得スキップ: t_ID番号 — ('IM001', '[IM001] [Microsoft][ODBC Driver Manager] ドライバーはこの関数をサポートしていません。 (0) (SQLForeignKeys)')",
+    "FK 取得スキップ: t_QR履歴 — ('IM001', '[IM001] [Microsoft][ODBC Driver Manager] ドライバーはこの関数をサポートしていません。 (0) (SQLForeignKeys)')",
+    "FK 取得スキップ: t_QR履歴(backup_260521) — ('IM001', '[IM001] [Microsoft][ODBC Driver Manager] ドライバーはこの関数をサポートしていません。 (0) (SQLForeignKeys)')",
+    "FK 取得スキップ: t_QR履歴Tmp — ('IM001', '[IM001] [Microsoft][ODBC Driver Manager] ドライバーはこの関数をサポートしていません。 (0) (SQLForeignKeys)')",
+    "FK 取得スキップ: t_エラーログ — ('IM001', '[IM001] [Microsoft][ODBC Driver Manager] ドライバーはこの関数をサポートしていません。 (0) (SQLForeignKeys)')",
+    "FK 取得スキップ: t_ロット完了理由 — ('IM001', '[IM001] [Microsoft][ODBC Driver Manager] ドライバーはこの関数をサポートしていません。 (0) (SQLForeignKeys)')",
+    "FK 取得スキップ: t_作業履歴 — ('IM001', '[IM001] [Microsoft][ODBC Driver Manager] ドライバーはこの関数をサポートしていません。 (0) (SQLForeignKeys)')",
+    "FK 取得スキップ: t_修正ログ — ('IM001', '[IM001] [Microsoft][ODBC Driver Manager] ドライバーはこの関数をサポートしていません。 (0) (SQLForeignKeys)')",
+    "FK 取得スキップ: t_分割ロット — ('IM001', '[IM001] [Microsoft][ODBC Driver Manager] ドライバーはこの関数をサポートしていません。 (0) (SQLForeignKeys)')",
+    "FK 取得スキップ: t_工程マスタ — ('IM001', '[IM001] [Microsoft][ODBC Driver Manager] ドライバーはこの関数をサポートしていません。 (0) (SQLForeignKeys)')",
+    "FK 取得スキップ: t_数量差異 — ('IM001', '[IM001] [Microsoft][ODBC Driver Manager] ドライバーはこの関数をサポートしていません。 (0) (SQLForeignKeys)')",
+    "FK 取得スキップ: t_現品票不具合内容 — ('IM001', '[IM001] [Microsoft][ODBC Driver Manager] ドライバーはこの関数をサポートしていません。 (0) (SQLForeignKeys)')",
+    "FK 取得スキップ: t_現品票履歴 — ('IM001', '[IM001] [Microsoft][ODBC Driver Manager] ドライバーはこの関数をサポートしていません。 (0) (SQLForeignKeys)')"
+  ]
+}

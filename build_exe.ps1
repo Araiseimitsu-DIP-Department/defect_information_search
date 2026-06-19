@@ -6,7 +6,7 @@ $AppName = [string]::Concat([char[]](0x4E0D, 0x5177, 0x5408, 0x60C5, 0x5831, 0x6
 $Root = (Resolve-Path ".").Path
 $BuildDir = Join-Path $Root "build"
 $DocsDir = Join-Path $Root "docs"
-$SourceIconName = [string]::Concat([char[]](0x5DE5,0x696D,0x691C,0x67FB,0x3068,0x30A8,0x30E9,0x30FC,0x691C,0x51FA,0x30A2,0x30A4,0x30B3,0x30F3,0x002E,0x0070,0x006E,0x0067))
+$SourceIconName = "app_icon.png"
 $RuntimeIconName = "app_icon.ico"
 $RuntimeIconPath = Join-Path $BuildDir $RuntimeIconName
 

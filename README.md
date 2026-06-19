@@ -100,7 +100,7 @@ onefile の exe は次で作成します。
 .\build_exe.ps1
 ```
 
-ビルドスクリプトは `docs\工業検査とエラー検出アイコン.png` から `.ico` を生成し、`.env` を同梱したうえで PyInstaller onefile を作成します。
+ビルドスクリプトは `docs\app_icon.png` から `.ico` を生成し、`.env` を同梱したうえで PyInstaller onefile を作成します。
 
 最終成果物は `dist\不具合情報検索.exe` です。
 

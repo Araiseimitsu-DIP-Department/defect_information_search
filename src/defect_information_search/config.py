@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 APP_NAME = "不具合情報検索"
 APP_USER_MODEL_ID = "defect_information_search"
 # アイコン元画像（docs 配下）。
-APP_ICON_SOURCE_FILENAME = "工業検査とエラー検出アイコン.png"
+APP_ICON_SOURCE_FILENAME = "app_icon.png"
 # ビルド時に生成し、実行時にも参照する ICO ファイル名。
 APP_ICON_RUNTIME_FILENAME = "app_icon.ico"
 

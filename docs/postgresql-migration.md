@@ -17,7 +17,7 @@ schema : public
 |---|---|---|
 | 外観検査・不具合情報 | `appearance_inspection_db` | `defect_information`, `numeric_inspection_records`, `numeric_inspector_master` |
 | 現品票・QR履歴 | `delivery_label_db` | `qr_history` |
-| 現品票検索 | `delivery_label_search_db` | `delivery_label_search` |
+| 現品票検索 | `delivery_label_db` | `delivery_label_history` |
 | ARAI製品マスター | `arai_masters` | `product_master` |
 
 ## .env
@@ -28,7 +28,6 @@ DB_BACKEND=postgres
 POSTGRES_CONNECTION_URL=postgresql://postgres:password@192.168.1.120:5432/appearance_inspection_db
 POSTGRES_APPEARANCE_CONNECTION_URL=postgresql://postgres:password@192.168.1.120:5432/appearance_inspection_db
 POSTGRES_DELIVERY_LABEL_CONNECTION_URL=postgresql://postgres:password@192.168.1.120:5432/delivery_label_db
-POSTGRES_DELIVERY_LABEL_SEARCH_CONNECTION_URL=postgresql://postgres:password@192.168.1.120:5432/delivery_label_search_db
 POSTGRES_ARAI_MASTERS_CONNECTION_URL=postgresql://postgres:password@192.168.1.120:5432/arai_masters
 POSTGRES_SCHEMA=public
 ```
@@ -45,14 +44,15 @@ POSTGRES_SCHEMA=public
 |---|---|
 | `docs/appearance_inspection_db` | 外観検査記録DBの移行資料 |
 | `docs/delivery_label_db` | 現品票DBの移行資料 |
-| `docs/delivery_label_search_db` | 現品票検索DBの移行資料 |
+| `docs/delivery_label_search_db` | 廃止済みの現品票検索DBの移行資料 |
 | `docs/arai_masters` | ARAI製品マスターの移行資料 |
 
 ## アプリ参照マッピング
 
 ### 品番検索
 
-`delivery_label_search_db.public.delivery_label_search` を参照します。
+品番検索候補は `delivery_label_db.public.delivery_label_history` を参照します。
+PostgreSQL runtime uses `ILIKE` for `product_code`, `product_name`, and `customer`, so product candidate search is case-insensitive.
 
 | アプリ用途 | PostgreSQLカラム |
 |---|---|

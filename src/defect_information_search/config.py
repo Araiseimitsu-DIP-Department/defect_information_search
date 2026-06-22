@@ -23,7 +23,6 @@ class AppConfig:
     postgres_dsn: str | None = None
     postgres_appearance_dsn: str | None = None
     postgres_delivery_label_dsn: str | None = None
-    postgres_delivery_label_search_dsn: str | None = None
     postgres_arai_masters_dsn: str | None = None
     postgres_schema: str = "public"
 
@@ -60,13 +59,6 @@ class AppConfig:
         postgres_delivery_label_dsn = (
             os.getenv("POSTGRES_DELIVERY_LABEL_CONNECTION_URL") or postgres_dsn or ""
         ).strip().strip('"') or None
-        postgres_delivery_label_search_dsn = (
-            os.getenv("POSTGRES_DELIVERY_LABEL_SEARCH_CONNECTION_URL")
-            or os.getenv("POSTGRES_PRODUCT_CATALOG_CONNECTION_URL")
-            or postgres_delivery_label_dsn
-            or postgres_dsn
-            or ""
-        ).strip().strip('"') or None
         postgres_arai_masters_dsn = (
             os.getenv("POSTGRES_ARAI_MASTERS_CONNECTION_URL")
             or os.getenv("POSTGRES_PRODUCT_MASTER_CONNECTION_URL")
@@ -80,7 +72,6 @@ class AppConfig:
             postgres_dsn=postgres_dsn,
             postgres_appearance_dsn=postgres_appearance_dsn,
             postgres_delivery_label_dsn=postgres_delivery_label_dsn,
-            postgres_delivery_label_search_dsn=postgres_delivery_label_search_dsn,
             postgres_arai_masters_dsn=postgres_arai_masters_dsn,
             postgres_schema=postgres_schema,
         )

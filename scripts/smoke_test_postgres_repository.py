@@ -21,7 +21,6 @@ def main() -> int:
     load_dotenv(ROOT_DIR / ".env", override=True)
     appearance_dsn = os.environ["POSTGRES_APPEARANCE_CONNECTION_URL"]
     delivery_label_dsn = os.environ["POSTGRES_DELIVERY_LABEL_CONNECTION_URL"]
-    delivery_label_search_dsn = os.environ["POSTGRES_DELIVERY_LABEL_SEARCH_CONNECTION_URL"]
     arai_masters_dsn = os.environ["POSTGRES_ARAI_MASTERS_CONNECTION_URL"]
     schema = os.getenv("POSTGRES_SCHEMA", "public")
 
@@ -57,7 +56,6 @@ def main() -> int:
         schema,
         appearance_dsn=appearance_dsn,
         delivery_label_dsn=delivery_label_dsn,
-        delivery_label_search_dsn=delivery_label_search_dsn,
         arai_masters_dsn=arai_masters_dsn,
     )
     products = repository.find_products(part_number[:3])

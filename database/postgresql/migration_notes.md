@@ -2,11 +2,10 @@
 
 ## Current Runtime Status
 
-- Status: application runtime updated for the split PostgreSQL databases.
+- Status: application runtime updated for the split PostgreSQL databases. Product search now reads from `delivery_label_db.public.delivery_label_history` and uses case-insensitive matching.
 - Runtime DBs:
   - `appearance_inspection_db`
   - `delivery_label_db`
-  - `delivery_label_search_db`
   - `arai_masters`
 - Runtime repository: `src/defect_information_search/infrastructure/postgres/defect_repository.py`
 - Access query behavior is handled in Python, not by PostgreSQL views.
@@ -34,7 +33,7 @@
 | Defect records | `appearance_inspection_db` | `defect_information` |
 | Numeric inspector lookup | `appearance_inspection_db` | `numeric_inspection_records`, `numeric_inspector_master` |
 | QR disposal lots | `delivery_label_db` | `qr_history` |
-| Product search candidates | `delivery_label_search_db` | `delivery_label_search` |
+| Product search candidates | `delivery_label_db` | `delivery_label_history` |
 | Product master | `arai_masters` | `product_master` |
 
 ## Legacy Single-DB Migration Notes

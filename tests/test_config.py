@@ -144,7 +144,6 @@ class AppConfigTests(unittest.TestCase):
                 "POSTGRES_CONNECTION_URL=postgresql://appearance\n"
                 "POSTGRES_APPEARANCE_CONNECTION_URL=postgresql://appearance\n"
                 "POSTGRES_DELIVERY_LABEL_CONNECTION_URL=postgresql://delivery\n"
-                "POSTGRES_DELIVERY_LABEL_SEARCH_CONNECTION_URL=postgresql://delivery-search\n"
                 "POSTGRES_ARAI_MASTERS_CONNECTION_URL=postgresql://masters\n",
                 encoding="utf-8",
             )
@@ -159,7 +158,6 @@ class AppConfigTests(unittest.TestCase):
                     "POSTGRES_CONNECTION_URL",
                     "POSTGRES_APPEARANCE_CONNECTION_URL",
                     "POSTGRES_DELIVERY_LABEL_CONNECTION_URL",
-                    "POSTGRES_DELIVERY_LABEL_SEARCH_CONNECTION_URL",
                     "POSTGRES_ARAI_MASTERS_CONNECTION_URL",
                 )
             }
@@ -176,7 +174,6 @@ class AppConfigTests(unittest.TestCase):
 
         self.assertEqual(config.postgres_appearance_dsn, "postgresql://appearance")
         self.assertEqual(config.postgres_delivery_label_dsn, "postgresql://delivery")
-        self.assertEqual(config.postgres_delivery_label_search_dsn, "postgresql://delivery-search")
         self.assertEqual(config.postgres_arai_masters_dsn, "postgresql://masters")
 
 

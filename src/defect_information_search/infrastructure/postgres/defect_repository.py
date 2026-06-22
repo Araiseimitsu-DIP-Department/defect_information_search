@@ -77,18 +77,15 @@ class PostgresDefectRepository(DefectRepository):
         *,
         appearance_dsn: str | None = None,
         delivery_label_dsn: str | None = None,
-        delivery_label_search_dsn: str | None = None,
         arai_masters_dsn: str | None = None,
     ) -> None:
         self._appearance_dsn = appearance_dsn or dsn
         self._delivery_label_dsn = delivery_label_dsn or dsn
-        self._delivery_label_search_dsn = delivery_label_search_dsn or self._delivery_label_dsn or dsn
         self._arai_masters_dsn = arai_masters_dsn or dsn
         if not all(
             (
                 self._appearance_dsn,
                 self._delivery_label_dsn,
-                self._delivery_label_search_dsn,
                 self._arai_masters_dsn,
             )
         ):
@@ -106,14 +103,14 @@ class PostgresDefectRepository(DefectRepository):
                 product_code AS part_number,
                 product_name AS part_name,
                 customer AS customer_name
-            FROM delivery_label_search
-            WHERE product_code LIKE %s
-               OR product_name LIKE %s
-               OR customer LIKE %s
+            FROM delivery_label_history
+            WHERE product_code ILIKE %s
+               OR product_name ILIKE %s
+               OR customer ILIKE %s
             ORDER BY product_code
         """
         frame = self._fetch_dataframe(
-            self._delivery_label_search_dsn, query, [pattern, pattern, pattern]
+            self._delivery_label_dsn, query, [pattern, pattern, pattern]
         ).reset_index(drop=True)
         return product_catalog_items_from_frame(frame)
 

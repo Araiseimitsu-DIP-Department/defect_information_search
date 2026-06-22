@@ -72,7 +72,6 @@ def main() -> int:
             config.postgres_schema,
             appearance_dsn=config.postgres_appearance_dsn,
             delivery_label_dsn=config.postgres_delivery_label_dsn,
-            delivery_label_search_dsn=config.postgres_delivery_label_search_dsn,
             arai_masters_dsn=config.postgres_arai_masters_dsn,
         )
     else:

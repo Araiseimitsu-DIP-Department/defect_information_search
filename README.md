@@ -17,7 +17,6 @@ defect_information_search/
 │  ├─ appearance_inspection_db/
 │  ├─ arai_masters/
 │  ├─ delivery_label_db/
-│  └─ delivery_label_search_db/
 ├─ scripts/
 │  └─ smoke_test_postgres_repository.py
 └─ src/
@@ -41,7 +40,6 @@ DB_BACKEND=postgres
 POSTGRES_CONNECTION_URL=postgresql://ユーザー名:パスワード@192.168.1.120:5432/appearance_inspection_db
 POSTGRES_APPEARANCE_CONNECTION_URL=postgresql://ユーザー名:パスワード@192.168.1.120:5432/appearance_inspection_db
 POSTGRES_DELIVERY_LABEL_CONNECTION_URL=postgresql://ユーザー名:パスワード@192.168.1.120:5432/delivery_label_db
-POSTGRES_DELIVERY_LABEL_SEARCH_CONNECTION_URL=postgresql://ユーザー名:パスワード@192.168.1.120:5432/delivery_label_search_db
 POSTGRES_ARAI_MASTERS_CONNECTION_URL=postgresql://ユーザー名:パスワード@192.168.1.120:5432/arai_masters
 POSTGRES_SCHEMA=public
 ```
@@ -50,8 +48,7 @@ POSTGRES_SCHEMA=public
 - `DB_BACKEND=access`: Access へ切り戻します。
 - `POSTGRES_CONNECTION_URL`: 互換用の基本接続先です。通常は `appearance_inspection_db` を指定します。
 - `POSTGRES_APPEARANCE_CONNECTION_URL`: 外観検査記録DBです。不具合情報と数値検査員情報を参照します。
-- `POSTGRES_DELIVERY_LABEL_CONNECTION_URL`: 現品票DBです。QR履歴を参照します。
-- `POSTGRES_DELIVERY_LABEL_SEARCH_CONNECTION_URL`: 現品票検索DBです。品番検索候補を参照します。
+- `POSTGRES_DELIVERY_LABEL_CONNECTION_URL`: 現品票DBです。QR履歴と品番検索候補を参照します。
 - `POSTGRES_ARAI_MASTERS_CONNECTION_URL`: ARAIマスターDBです。`product_master` から必要カラムのみ参照します。
 
 `.env` は認証情報を含むため Git 管理しません。
@@ -85,7 +82,7 @@ PostgreSQL repository の実データ確認:
 | 不具合検索・集計 | `appearance_inspection_db` | `defect_information` |
 | 数値検査員名補完 | `appearance_inspection_db` | `numeric_inspection_records`, `numeric_inspector_master` |
 | QR廃棄対象ロット | `delivery_label_db` | `qr_history` |
-| 品番検索候補 | `delivery_label_search_db` | `delivery_label_search` |
+| 品番検索候補 | `delivery_label_db` | `delivery_label_history` |
 | 製品マスター | `arai_masters` | `product_master` |
 
 `arai_masters.product_master` は旧 Access の `t_製品マスタ` 相当として扱います。アプリではマッピングメモに基づき、`product_no`, `product_name`, `customer_name`, `material_and_diameter`, `unit_price`, `unit_weight`, `material_identification`, `next_process` など必要なカラムだけを取得します。
@@ -112,7 +109,7 @@ onefile の exe は次で作成します。
 
 ## 主な機能
 
-- 品番候補検索
+- 品番候補検索（PostgreSQLでは大文字小文字を区別せず、例: `3d025` で `3D025...` を候補表示）
 - 候補一覧からの詳細表示
 - 号機絞り込み
 - 合計値・不具合内訳表示

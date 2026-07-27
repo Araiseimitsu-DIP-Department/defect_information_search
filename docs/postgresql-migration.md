@@ -15,7 +15,7 @@ schema : public
 
 | 用途 | PostgreSQL DB | 主なテーブル |
 |---|---|---|
-| 外観検査・不具合情報 | `appearance_inspection_db` | `defect_information`, `numeric_inspection_records`, `numeric_inspector_master` |
+| 外観検査・不具合情報 | `appearance_inspection_db` | `defect_information`, `numeric_inspector_master` |
 | 現品票・QR履歴 | `delivery_label_db` | `qr_history` |
 | 現品票検索 | `delivery_label_db` | `delivery_label_history` |
 | ARAI製品マスター | `arai_masters` | `product_master` |
@@ -121,9 +121,12 @@ PostgreSQL runtime uses `ILIKE` for `product_code`, `product_name`, and `custome
 Access のクエリ相当の検査員名補完は、PostgreSQL ビューではなく Python で行います。
 
 1. `defect_information.production_lot_id` を取得
-2. `numeric_inspection_records` からロットごとの検査員IDを取得
-3. `numeric_inspector_master` から検査員名を取得
-4. Python 側で不具合明細へ結合
+2. `qr_history` から、`process_name` に「数値検査」を含み、`position` が空でない履歴を取得
+3. ロットごとに `date_time`、`id` の降順で最新1件を選び、`position` を検査員IDとして使用
+4. `numeric_inspector_master` から検査員名を取得
+5. Python 側で不具合明細へ結合
+
+更新停止済みの `numeric_inspection_records` は参照しません。
 
 ### QR履歴
 

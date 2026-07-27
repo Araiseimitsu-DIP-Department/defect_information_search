@@ -80,10 +80,12 @@ PostgreSQL repository の実データ確認:
 | 用途 | DB | テーブル |
 |---|---|---|
 | 不具合検索・集計 | `appearance_inspection_db` | `defect_information` |
-| 数値検査員名補完 | `appearance_inspection_db` | `numeric_inspection_records`, `numeric_inspector_master` |
-| QR廃棄対象ロット | `delivery_label_db` | `qr_history` |
+| 数値検査履歴・QR廃棄対象ロット | `delivery_label_db` | `qr_history` |
+| 数値検査員名補完 | `appearance_inspection_db` | `numeric_inspector_master` |
 | 品番検索候補 | `delivery_label_db` | `delivery_label_history` |
 | 製品マスター | `arai_masters` | `product_master` |
+
+数値検査員は、`qr_history.process_name` に「数値検査」を含み、`position` が空でない履歴のうち、ロットごとの最新1件を採用します。`position` を検査員IDとして `numeric_inspector_master.inspector_id` と照合します。更新停止済みの `numeric_inspection_records` は参照しません。
 
 `arai_masters.product_master` は旧 Access の `t_製品マスタ` 相当として扱います。アプリではマッピングメモに基づき、`product_no`, `product_name`, `customer_name`, `material_and_diameter`, `unit_price`, `unit_weight`, `material_identification`, `next_process` など必要なカラムだけを取得します。
 

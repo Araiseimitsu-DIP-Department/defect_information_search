@@ -68,6 +68,8 @@ DEFECT_COLUMNS = """
     other_detail
 """
 
+NUMERIC_INSPECTION_PROCESS_NAME = "数値検査"
+
 
 class PostgresDefectRepository(DefectRepository):
     def __init__(
@@ -239,43 +241,67 @@ class PostgresDefectRepository(DefectRepository):
         if frame.empty or "production_lot_id" not in frame.columns:
             return frame
 
-        lot_ids = sorted({str(lot_id) for lot_id in frame["production_lot_id"].dropna() if str(lot_id)})
+        lot_key = "_numeric_inspector_lot_id"
+        result = frame.copy()
+        result[lot_key] = result["production_lot_id"].fillna("").astype(str).str.strip()
+        lot_ids = sorted({lot_id for lot_id in result[lot_key] if lot_id})
         if not lot_ids:
-            frame["inspector_name"] = None
-            return frame
+            result["inspector_name"] = None
+            return result.drop(columns=[lot_key])
 
         inspector_rows: list[pd.DataFrame] = []
         for chunk in self._chunked(lot_ids, size=500):
             placeholders = ", ".join(["%s"] * len(chunk))
             query = f"""
-                SELECT DISTINCT ON (production_lot_id)
-                    production_lot_id,
-                    inspector_id
-                FROM numeric_inspection_records
-                WHERE production_lot_id IN ({placeholders})
-                ORDER BY production_lot_id, inspected_at DESC NULLS LAST, id DESC
+                SELECT DISTINCT ON (TRIM(production_lot_id))
+                    TRIM(production_lot_id) AS {lot_key},
+                    TRIM(position) AS inspector_id
+                FROM qr_history
+                WHERE TRIM(production_lot_id) IN ({placeholders})
+                  AND TRIM(process_name) LIKE %s
+                  AND NULLIF(TRIM(position), '') IS NOT NULL
+                ORDER BY TRIM(production_lot_id), date_time DESC NULLS LAST, id DESC
             """
-            inspector_rows.append(self._fetch_dataframe(self._appearance_dsn, query, chunk))
+            inspector_rows.append(
+                self._fetch_dataframe(
+                    self._delivery_label_dsn,
+                    query,
+                    [*chunk, f"%{NUMERIC_INSPECTION_PROCESS_NAME}%"],
+                )
+            )
 
         inspector_frame = pd.concat(inspector_rows, ignore_index=True) if inspector_rows else pd.DataFrame()
-        inspector_ids = sorted({str(value) for value in inspector_frame.get("inspector_id", pd.Series(dtype=object)).dropna()})
+        inspector_ids = sorted(
+            {
+                str(value).strip()
+                for value in inspector_frame.get("inspector_id", pd.Series(dtype=object)).dropna()
+                if str(value).strip()
+            }
+        )
         if not inspector_ids:
-            frame["inspector_name"] = None
-            return frame
+            result["inspector_name"] = None
+            return result.drop(columns=[lot_key])
 
         name_rows: list[pd.DataFrame] = []
         for chunk in self._chunked(inspector_ids, size=500):
             placeholders = ", ".join(["%s"] * len(chunk))
             query = f"""
-                SELECT inspector_id, inspector_name
+                SELECT
+                    TRIM(inspector_id) AS inspector_id,
+                    TRIM(inspector_name) AS inspector_name
                 FROM numeric_inspector_master
-                WHERE inspector_id IN ({placeholders})
+                WHERE TRIM(inspector_id) IN ({placeholders})
             """
             name_rows.append(self._fetch_dataframe(self._appearance_dsn, query, chunk))
 
         name_frame = pd.concat(name_rows, ignore_index=True) if name_rows else pd.DataFrame()
         enriched = inspector_frame.merge(name_frame, on="inspector_id", how="left")
-        return frame.drop(columns=["inspector_name"], errors="ignore").merge(enriched, on="production_lot_id", how="left")
+        enriched = enriched[[lot_key, "inspector_name"]]
+        return (
+            result.drop(columns=["inspector_name"], errors="ignore")
+            .merge(enriched, on=lot_key, how="left")
+            .drop(columns=[lot_key])
+        )
 
     def _fetch_dataframe(
         self,

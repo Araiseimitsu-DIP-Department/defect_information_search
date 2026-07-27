@@ -128,7 +128,6 @@ def clean_datetime(value: Any) -> datetime | None:
 
 def map_defect_record(row: dict[str, Any]) -> tuple[Any, ...]:
     values: list[Any] = [
-        clean_int(row.get("ID")),
         clean_text(row.get("生産ロットID")),
         clean_text(row.get("品番")),
         clean_date(row.get("指示日")),
@@ -150,7 +149,6 @@ def map_defect_record(row: dict[str, Any]) -> tuple[Any, ...]:
 
 def map_inspection_record(row: dict[str, Any]) -> tuple[Any, ...]:
     return (
-        clean_int(row.get("ID")),
         clean_datetime(row.get("日付時刻")),
         clean_text(row.get("生産ロットID")),
         clean_text(row.get("検査員ID")),
@@ -227,7 +225,6 @@ def map_product_master(row: dict[str, Any]) -> tuple[Any, ...]:
 
 def map_qr_history(row: dict[str, Any]) -> tuple[Any, ...]:
     return (
-        clean_int(row.get("ID")),
         clean_datetime(row.get("日付時刻")),
         clean_text(row.get("QRコード")),
         clean_text(row.get("生産ロットID")),
@@ -246,7 +243,6 @@ MIGRATIONS = [
         "t_QR履歴",
         "qr_history",
         (
-            "id",
             "recorded_at",
             "qr_code",
             "production_lot_id",
@@ -265,7 +261,6 @@ MIGRATIONS = [
         "t_不具合情報",
         "defect_records",
         (
-            "id",
             "production_lot_id",
             "part_number",
             "instruction_date",
@@ -295,7 +290,7 @@ MIGRATIONS = [
     TableMigration(
         "t_数値検査記録",
         "inspection_records",
-        ("id", "recorded_at", "production_lot_id", "inspector_id", "process_name", "machine_no"),
+        ("recorded_at", "production_lot_id", "inspector_id", "process_name", "machine_no"),
         map_inspection_record,
         24846,
     ),

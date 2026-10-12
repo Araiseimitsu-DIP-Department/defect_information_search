@@ -27,6 +27,17 @@ class _FakeGateway:
 
 
 class AccessRepositorySqlTests(unittest.TestCase):
+    def test_aggregate_reads_current_and_archive_from_appearance_gateway(self):
+        from datetime import date
+        repo = AccessDefectRepository.__new__(AccessDefectRepository)
+        repo._appearance_gateway = _FakeGateway()
+        rows = repo.find_aggregate_inspections(date(2025, 10, 1), date(2026, 9, 30))
+        self.assertEqual(rows, [])
+        calls = repo._appearance_gateway.calls
+        self.assertIn("[t_外観検査集計]", calls[0][0])
+        self.assertIn("[t_外観検査集計保存]", calls[1][0])
+        self.assertEqual(calls[0][1], (date(2025, 10, 1), date(2026, 10, 1)))
+
     def setUp(self) -> None:
         self.repo = AccessDefectRepository.__new__(AccessDefectRepository)
         self.fake_gateway = _FakeGateway()

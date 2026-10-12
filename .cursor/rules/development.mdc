@@ -1,0 +1,13 @@
+---
+description: 不具合情報検索の開発で常に守る制約
+alwaysApply: true
+---
+
+# 開発制約
+
+- 依頼された範囲を最小限の変更で扱い、無関係なアプリコード・構成を変更しない。
+- Confirmedは根拠を示す。Assumption / Unknownを確定した業務仕様として実装・記載しない。
+- コード・Docs・Testsの不一致は報告し、独断で一方を正としない。既存Testsを都合のよい期待値に変更しない。
+- UIからSQL・DB接続を直接行わず、Repository境界とMapperによる変換を維持する。
+- AGENTSは参照先、Rulesは制約、Skillsは手順、Docsは仕様、Testsは仕様確認、docs/update.mdは履歴に限定する。詳細の重複は参照で避ける。
+- 検証は実在する方法を使う。未実施・適用外・未確認を成功として扱わない。

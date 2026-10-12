@@ -6,10 +6,22 @@ import pandas as pd
 
 from defect_information_search.domain.models import (
     DefectRecord,
+    InspectionSummary,
     ProductCatalogItem,
     ProductMasterItem,
     QrHistoryItem,
 )
+
+
+def inspection_summary_items_from_frame(frame: pd.DataFrame) -> list[InspectionSummary]:
+    return [InspectionSummary(
+        record_id=_as_optional_int(_value(row, "id", "ID")),
+        lot_id=(_as_optional_str(_value(row, "production_lot_id", "生産ロットID")) or "").strip(),
+        inspection_date=_as_optional_date(_value(row, "inspection_date", "日付")),
+        source_priority=_as_optional_int(row.get("source_priority")) or 0,
+        part_number=_as_optional_str(_value(row, "product_code", "品番")) or "",
+        quantity=_as_optional_int(_value(row, "quantity", "数量")),
+    ) for row in frame.to_dict("records")]
 
 
 def product_catalog_items_from_frame(frame: pd.DataFrame) -> list[ProductCatalogItem]:

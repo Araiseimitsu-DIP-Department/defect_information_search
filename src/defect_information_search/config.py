@@ -25,6 +25,7 @@ class AppConfig:
     postgres_delivery_label_dsn: str | None = None
     postgres_arai_masters_dsn: str | None = None
     postgres_schema: str = "public"
+    access_appearance_db_path: Path | None = None
 
     @classmethod
     def load(cls, base_dir: Path, extra_dirs: Iterable[Path] | None = None) -> "AppConfig":
@@ -66,6 +67,7 @@ class AppConfig:
             or ""
         ).strip().strip('"') or None
         postgres_schema = os.getenv("POSTGRES_SCHEMA", "public").strip().strip('"') or "public"
+        appearance_path = os.getenv("ACCESS_APPEARANCE_DB_PATH", "").strip().strip('"')
         return cls(
             access_db_path=Path(db_path),
             database_backend=database_backend,
@@ -74,6 +76,7 @@ class AppConfig:
             postgres_delivery_label_dsn=postgres_delivery_label_dsn,
             postgres_arai_masters_dsn=postgres_arai_masters_dsn,
             postgres_schema=postgres_schema,
+            access_appearance_db_path=Path(appearance_path) if appearance_path else None,
         )
 
     @staticmethod

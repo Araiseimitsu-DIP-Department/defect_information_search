@@ -54,6 +54,16 @@ class InspectionRecord:
 
 
 @dataclass(frozen=True, slots=True)
+class InspectionSummary:
+    record_id: int | None
+    lot_id: str
+    inspection_date: date | None
+    source_priority: int = 0
+    part_number: str = ""
+    quantity: int | None = None
+
+
+@dataclass(frozen=True, slots=True)
 class DefectRecord:
     record_id: int | None
     lot_id: str

@@ -6,6 +6,7 @@ from typing import Protocol
 
 from defect_information_search.domain.models import (
     DefectRecord,
+    InspectionSummary,
     ProductCatalogItem,
     ProductMasterItem,
     QrHistoryItem,
@@ -13,6 +14,12 @@ from defect_information_search.domain.models import (
 
 
 class DefectRepository(Protocol):
+    def find_aggregate_inspections(self, date_from: date, date_to: date) -> Sequence[InspectionSummary]:
+        ...
+
+    def find_aggregate_defects_for_lots(self, lot_ids: Sequence[str]) -> Sequence[DefectRecord]:
+        ...
+
     def find_products(self, keyword: str) -> Sequence[ProductCatalogItem]:
         ...
 

@@ -18,6 +18,36 @@ from defect_information_search.infrastructure.postgres.defect_repository import 
 
 
 class PostgresRepositorySqlTests(unittest.TestCase):
+    def test_aggregate_reads_both_sources_and_includes_end_day_time(self):
+        from datetime import date
+        repo = PostgresDefectRepository.__new__(PostgresDefectRepository)
+        repo._appearance_dsn = "postgresql://appearance"
+        calls = []
+        def fetch(dsn, query, params):
+            calls.append((dsn, query, params))
+            return pd.DataFrame([{"id": 1, "production_lot_id": " P1 ",
+                                  "inspection_date": "2026-09-30 23:59:59", "source_priority": 1}])
+        repo._fetch_dataframe = fetch
+        rows = repo.find_aggregate_inspections(date(2025, 10, 1), date(2026, 9, 30))
+        self.assertEqual(rows[0].inspection_date, date(2026, 9, 30))
+        self.assertEqual(rows[0].lot_id, "P1")
+        self.assertIn("appearance_inspection_summary_archives", calls[0][1])
+        self.assertIn("UNION ALL", calls[0][1])
+        self.assertEqual(calls[0][2], [date(2025, 10, 1), date(2026, 10, 1)] * 2)
+
+    def test_aggregate_defects_trim_lots_and_order_by_id(self):
+        repo = PostgresDefectRepository.__new__(PostgresDefectRepository)
+        repo._appearance_dsn = "postgresql://appearance"
+        calls = []
+        def fetch(dsn, query, params):
+            calls.append((query, params))
+            return pd.DataFrame()
+        repo._fetch_dataframe = fetch
+        repo.find_aggregate_defects_for_lots([" P1 ", "P1"])
+        self.assertIn("TRIM(production_lot_id)", calls[0][0])
+        self.assertIn("ORDER BY id", calls[0][0])
+        self.assertEqual(calls[0][1], ["P1"])
+
     def test_find_products_uses_delivery_label_history(self) -> None:
         repo = PostgresDefectRepository.__new__(PostgresDefectRepository)
         repo._delivery_label_dsn = "postgresql://delivery"

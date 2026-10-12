@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterable, Sequence
-from datetime import date
+from datetime import date, timedelta
 
 import pandas as pd
 import psycopg
@@ -12,6 +12,7 @@ from defect_information_search.domain.models import DefectRecord, ProductCatalog
 from defect_information_search.infrastructure.mappers.domain_mappers import (
     defect_records_frame_from_items,
     defect_records_from_frame,
+    inspection_summary_items_from_frame,
     product_catalog_items_from_frame,
     product_master_items_from_frame,
     qr_history_items_from_frame,
@@ -93,6 +94,29 @@ class PostgresDefectRepository(DefectRepository):
         ):
             raise RepositoryError("PostgreSQL connection URLs are not configured.")
         self._schema = schema or "public"
+
+    def find_aggregate_inspections(self, date_from: date, date_to: date):
+        query = """
+            SELECT id, production_lot_id, inspection_date, product_code, quantity, 0 AS source_priority
+            FROM appearance_inspection_summaries
+            WHERE inspection_date >= %s AND inspection_date < %s
+            UNION ALL
+            SELECT id, production_lot_id, inspection_date, product_code, quantity, 1 AS source_priority
+            FROM appearance_inspection_summary_archives
+            WHERE inspection_date >= %s AND inspection_date < %s
+        """
+        stop = date_to + timedelta(days=1)
+        frame = self._fetch_dataframe(self._appearance_dsn, query, [date_from, stop, date_from, stop])
+        return inspection_summary_items_from_frame(frame)
+
+    def find_aggregate_defects_for_lots(self, lot_ids: Sequence[str]) -> Sequence[DefectRecord]:
+        records = []
+        for chunk in self._chunked(sorted({lot.strip() for lot in lot_ids if lot.strip()}), 500):
+            placeholders = ", ".join(["%s"] * len(chunk))
+            query = f"""SELECT {DEFECT_COLUMNS} FROM defect_information
+                        WHERE TRIM(production_lot_id) IN ({placeholders}) ORDER BY id"""
+            records.extend(defect_records_from_frame(self._fetch_dataframe(self._appearance_dsn, query, chunk)))
+        return records
 
     def find_products(self, keyword: str) -> Sequence[ProductCatalogItem]:
         normalized_keyword = keyword.strip()

@@ -127,52 +127,9 @@ class DefectService:
         return export_service.export_rows(columns, rows, target_path)
 
     def export_aggregate(self, date_from: date, date_to: date) -> pd.DataFrame:
-        defects = defect_records_frame_from_items(list(self.repository.find_defects_between(date_from, date_to)))
-        if defects.empty:
-            return defects
+        from defect_information_search.services.aggregate_service import build_aggregate
 
-        defects["廃棄不具合数"] = defects["総不具合数"].fillna(0) - defects["切粉"].fillna(0)
-        defects = defects[
-            (defects["廃棄不具合数"] > 0)
-            & defects["生産ロットID"].fillna("").astype(str).str.startswith("P")
-        ].copy()
-        if defects.empty:
-            return defects
-
-        master = product_master_frame_from_items(
-            list(self.repository.find_product_master_for_parts(defects["品番"].dropna().astype(str).tolist()))
-        )
-        merged = defects.merge(master, left_on="品番", right_on="製品番号", how="left")
-        merged["単価"] = pd.to_numeric(merged["単価"], errors="coerce")
-        merged["製品単重"] = pd.to_numeric(merged["製品単重"], errors="coerce")
-        merged["廃棄量"] = merged["廃棄不具合数"] * merged["製品単重"]
-        merged["廃棄金額"] = merged["廃棄不具合数"] * merged["単価"]
-        merged = merged[merged["廃棄金額"].fillna(0) > 0].copy()
-        if merged.empty:
-            return merged
-
-        columns = [
-            "生産ロットID",
-            "品番",
-            "指示日",
-            "号機",
-            "検査者1",
-            "検査者2",
-            "検査者3",
-            "検査者4",
-            "検査者5",
-            "時間",
-            "数量",
-            "製品単重",
-            "材質",
-            "単価",
-            "廃棄量",
-            "廃棄金額",
-            "廃棄不具合数",
-            "総不具合数",
-            "不良率",
-        ] + [label for label, _ in DEFECT_FIELDS] + ["その他内容"]
-        return self._ensure_columns(merged, columns).sort_values(["品番", "指示日"]).reset_index(drop=True)
+        return build_aggregate(self.repository, date_from, date_to)
 
     def export_disposal(self, date_from: date, date_to: date) -> pd.DataFrame:
         qr_lots = qr_history_frame_from_items(list(self.repository.find_qr_history_lots(date_from, date_to)))

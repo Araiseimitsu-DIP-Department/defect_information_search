@@ -156,8 +156,12 @@ class WebviewBridge:
             if target_path is None:
                 return {"ok": True, "canceled": True}
             dataframe = self._service.export_aggregate(start_date, end_date)
+            info = dataframe.attrs.get("aggregate_info", {})
+            notice = ("検査日基準・現在単価の参考金額です。\n"
+                      f"不具合情報未照合: {info.get('不具合情報未照合ロット数', 0)}ロット、"
+                      f"単価未登録: {info.get('単価未登録ロット数', 0)}ロット。")
             if dataframe.empty:
-                return {"ok": False, "error": "出力できるデータがありません。"}
+                return {"ok": False, "error": "出力できるデータがありません。\n" + notice}
             exported_rows = self._export_service.export_dataframe(dataframe, target_path, formatter="aggregate")
         except RepositoryError as exc:
             return {"ok": False, "error": "集計データに失敗しました。", "detail": str(exc)}
@@ -166,7 +170,7 @@ class WebviewBridge:
 
         if exported_rows == 0:
             return {"ok": False, "error": "出力できるデータがありません。"}
-        return {"ok": True, "path": str(target_path), "exported_rows": int(exported_rows)}
+        return {"ok": True, "path": str(target_path), "exported_rows": int(exported_rows), "notice": notice}
 
     def export_disposal(self, date_from: str, date_to: str) -> dict[str, Any]:
         start_date = self._parse_date(date_from)

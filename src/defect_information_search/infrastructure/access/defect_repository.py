@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterable, Sequence
-from datetime import date
+from datetime import date, timedelta
 from pathlib import Path
 
 import pandas as pd
@@ -12,6 +12,7 @@ from defect_information_search.domain.models import DefectRecord, ProductCatalog
 from defect_information_search.infrastructure.access_gateway import AccessGateway
 from defect_information_search.infrastructure.mappers.domain_mappers import (
     defect_records_from_frame,
+    inspection_summary_items_from_frame,
     product_catalog_items_from_frame,
     product_master_items_from_frame,
     qr_history_items_from_frame,
@@ -72,8 +73,32 @@ PRODUCT_MASTER_COLUMNS = ["製品番号", "製品単重", "材質", "単価", "�
 
 
 class AccessDefectRepository(DefectRepository):
-    def __init__(self, access_db_path: Path) -> None:
+    def __init__(self, access_db_path: Path, appearance_db_path: Path | None = None) -> None:
         self._gateway = AccessGateway(access_db_path)
+        self._appearance_gateway = AccessGateway(appearance_db_path or access_db_path)
+
+    def find_aggregate_inspections(self, date_from: date, date_to: date):
+        frames = []
+        for priority, table in enumerate(("t_外観検査集計", "t_外観検査集計保存")):
+            query = f"""SELECT [ID] AS id, [生産ロットID] AS production_lot_id,
+                        [日付] AS inspection_date, [品番] AS product_code, [数量] AS quantity FROM [{table}]
+                        WHERE [日付] >= ? AND [日付] < ? ORDER BY [ID]"""
+            frame = self._safe_fetch_dataframe(
+                self._appearance_gateway.fetch_dataframe, query,
+                [date_from, date_to + timedelta(days=1)],
+            )
+            frame["source_priority"] = priority
+            frames.append(frame)
+        return inspection_summary_items_from_frame(pd.concat(frames, ignore_index=True))
+
+    def find_aggregate_defects_for_lots(self, lot_ids: Sequence[str]) -> Sequence[DefectRecord]:
+        records = []
+        for chunk in self._chunked(sorted({lot.strip() for lot in lot_ids if lot.strip()}), 200):
+            placeholders = ", ".join("?" for _ in chunk)
+            query = f"""SELECT * FROM [t_不具合情報]
+                        WHERE Trim([生産ロットID]) IN ({placeholders}) ORDER BY [ID]"""
+            records.extend(defect_records_from_frame(self._safe_fetch_dataframe(self._gateway.fetch_dataframe, query, chunk)))
+        return records
 
     def find_products(self, keyword: str) -> Sequence[ProductCatalogItem]:
         normalized_keyword = keyword.strip()

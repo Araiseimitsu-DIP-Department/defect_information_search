@@ -580,7 +580,9 @@ async function exportCurrent() {
 }
 
 async function exportByDate(actionName, title) {
-  const confirmed = await confirmDialog(title, 'Excel に出力しますか。');
+  const confirmed = await confirmDialog(title, actionName === 'export_aggregate'
+    ? '指定期間を検査日基準で集計し、Excel に出力しますか。'
+    : 'Excel に出力しますか。');
   if (!confirmed) {
     return;
   }
@@ -596,7 +598,7 @@ async function exportByDate(actionName, title) {
       return;
     }
     if (!response.canceled) {
-      await infoDialog('完了', `Excel ファイルを保存しました。\n${response.path}`);
+      await infoDialog('完了', `Excel ファイルを保存しました。\n${response.path}${response.notice ? '\n' + response.notice : ''}`);
     }
   } finally {
     setBusy(false);

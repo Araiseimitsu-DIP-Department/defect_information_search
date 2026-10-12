@@ -75,7 +75,7 @@ def main() -> int:
             arai_masters_dsn=config.postgres_arai_masters_dsn,
         )
     else:
-        repository = AccessDefectRepository(config.access_db_path)
+        repository = AccessDefectRepository(config.access_db_path, config.access_appearance_db_path)
 
     service = DefectService(repository)
     export_service = ExportService()

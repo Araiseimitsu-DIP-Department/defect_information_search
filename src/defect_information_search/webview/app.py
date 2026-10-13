@@ -13,7 +13,6 @@ from defect_information_search.config import (
     APP_ICON_RUNTIME_FILENAME,
     AppConfig,
 )
-from defect_information_search.infrastructure.access.defect_repository import AccessDefectRepository
 from defect_information_search.infrastructure.postgres.defect_repository import PostgresDefectRepository
 from defect_information_search.services.defect_service import DefectService
 from defect_information_search.services.export_service import ExportService
@@ -75,6 +74,10 @@ def main() -> int:
             arai_masters_dsn=config.postgres_arai_masters_dsn,
         )
     else:
+        if getattr(sys, "frozen", False) and (bundle_dir / "build_backend.txt").read_text(encoding="utf-8").strip() == "postgres":
+            raise SystemExit("このexeはPostgreSQL専用です。Access運用にはAccess対応版を再ビルドしてください。")
+        from defect_information_search.infrastructure.access.defect_repository import AccessDefectRepository
+
         repository = AccessDefectRepository(config.access_db_path, config.access_appearance_db_path)
 
     service = DefectService(repository)

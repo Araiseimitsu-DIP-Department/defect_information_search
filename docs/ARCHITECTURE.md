@@ -33,7 +33,7 @@
 
 ## 実行環境
 
-Python、pywebview、Edge WebView2、pandas、openpyxl、psycopg、pyodbc、python-dotenv、PyInstaller、sixを使用。依存指定はrequirements.txtが原本。調査時の.venvはPython 3.12.10。移行専用依存は [DATABASE](DATABASE.md) を参照。
+Python、pywebview、Edge WebView2、pandas、openpyxl、psycopg、python-dotenv、PyInstaller、sixを使用。PostgreSQLの依存指定はrequirements.txt、Access用のpyodbcはrequirements-access.txtで追加する。調査時の.venvはPython 3.12.10。移行専用依存は [DATABASE](DATABASE.md) を参照。
 
 画面は最大化起動、初期指定1600×1200、最小960×640。狭い・低い画面でスクロール条件を切替える。UI主参照は [DESIGN](DESIGN.md)。loggingは起動時に無効化される。
 

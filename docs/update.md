@@ -1,5 +1,12 @@
 # 変更履歴
 
+## 2026-10-13
+
+- PyInstallerの既定ビルドをPostgreSQL専用にし、Access依存・設定項目を成果物から除外。Accessのソース・SQL・移行資産を保持し、Accessビルドの選択肢を追加。
+- Access Repositoryを条件付きで読み込み、PG設定でAccessパスを必須としない。PG専用exeでAccessを選ぶと接続前に停止。
+- pyodbcをrequirements-access.txtへ分離。成果物内の必須モジュール・資産とAccess依存不在を自動検査し、ビルド失敗時は停止。
+- 全53件Tests、実PG読み取り専用スモーク、ビルド・アーカイブ検査を確認。詳細・未確認事項はBUILD_OPTIMIZATION.md。
+
 ## 2026-10-12
 
 - PostgreSQL切替後に検索・明細・42期集計・Excel読戻しと全47件のTestsを再確認し、exeを再ビルド。内蔵モジュール・設定・資産とプロセス起動を確認。詳細はAGGREGATE_VERIFICATION.md。

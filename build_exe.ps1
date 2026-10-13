@@ -1,10 +1,17 @@
 param(
-    [string]$PythonExe = ".\.venv\Scripts\python.exe"
+    [string]$PythonExe = ".\.venv\Scripts\python.exe",
+    [ValidateSet("postgres", "access")]
+    [string]$Backend = "postgres"
 )
 
+$ErrorActionPreference = "Stop"
 $AppName = [string]::Concat([char[]](0x4E0D, 0x5177, 0x5408, 0x60C5, 0x5831, 0x691C, 0x7D22))
 $Root = (Resolve-Path ".").Path
+if ($Root -ne $PSScriptRoot) {
+    throw "Run this script from the repository root."
+}
 $BuildDir = Join-Path $Root "build"
+$DistDir = Join-Path $Root "dist"
 $DocsDir = Join-Path $Root "docs"
 $SourceIconName = "app_icon.png"
 $RuntimeIconName = "app_icon.ico"
@@ -98,12 +105,12 @@ function New-AppIcon {
     }
 }
 
-if (Test-Path ".\dist") {
-    Remove-Item ".\dist" -Recurse -Force
+if (Test-Path -LiteralPath $DistDir) {
+    Remove-Item -LiteralPath $DistDir -Recurse -Force
 }
 
 if (Test-Path $BuildDir) {
-    Remove-Item $BuildDir -Recurse -Force
+    Remove-Item -LiteralPath $BuildDir -Recurse -Force
 }
 
 $pngCandidates = Get-ChildItem $DocsDir -File | Where-Object { $_.Name -eq $SourceIconName }
@@ -116,6 +123,10 @@ New-AppIcon -SourcePath $pngCandidates[0].FullName -DestinationPath $RuntimeIcon
 if (-not (Test-Path ".\.env")) {
     throw "Missing .env in repository root."
 }
+
+$BundledEnv = Join-Path $BuildDir ".env"
+& $PythonExe tools\build_support.py prepare .env --backend $Backend --destination $BundledEnv
+if ($LASTEXITCODE -ne 0) { throw "Build settings preparation failed." }
 
 $pyInstallerArgs = @(
     "-m", "PyInstaller",
@@ -142,12 +153,22 @@ $pyInstallerArgs = @(
     "--exclude-module", "PySide6.QtWebEngineCore",
     "--exclude-module", "PySide6.QtWebEngineQuick",
     "--add-data", "$RuntimeIconPath;.",
-    "--add-data", ".env;.",
-    "--add-data", "src\defect_information_search\webview\assets;defect_information_search\webview\assets",
-    "main.py"
+    "--add-data", "$BundledEnv;.",
+    "--add-data", "$(Join-Path $BuildDir 'build_backend.txt');.",
+    "--add-data", "src\defect_information_search\webview\assets;defect_information_search\webview\assets"
 )
 
+if ($Backend -eq "postgres") {
+    foreach ($module in @("pyodbc", "pypyodbc", "defect_information_search.infrastructure.access", "defect_information_search.infrastructure.access_gateway")) {
+        $pyInstallerArgs += @("--exclude-module", $module)
+    }
+}
+$pyInstallerArgs += "main.py"
 & $PythonExe @pyInstallerArgs
+if ($LASTEXITCODE -ne 0) { throw "PyInstaller failed with exit code $LASTEXITCODE." }
+
+& $PythonExe tools\build_support.py verify (Join-Path $DistDir "$AppName.exe") --backend $Backend
+if ($LASTEXITCODE -ne 0) { throw "Build archive verification failed." }
 
 if (Test-Path ".\$AppName.spec") {
     Remove-Item ".\$AppName.spec" -Force

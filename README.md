@@ -35,7 +35,6 @@ defect_information_search/
 `.env.example` を参考に `.env` を作成します。
 
 ```env
-ACCESS_DB_PATH=C:\path\to\不具合情報検索.accdb
 DB_BACKEND=postgres
 POSTGRES_CONNECTION_URL=postgresql://ユーザー名:パスワード@192.168.1.120:5432/appearance_inspection_db
 POSTGRES_APPEARANCE_CONNECTION_URL=postgresql://ユーザー名:パスワード@192.168.1.120:5432/appearance_inspection_db
@@ -45,7 +44,7 @@ POSTGRES_SCHEMA=public
 ```
 
 - `DB_BACKEND=postgres`: PostgreSQL を使用します。
-- `DB_BACKEND=access`: Access へ切り戻します。
+- `DB_BACKEND=access`: Access対応版で切り戻します。`ACCESS_DB_PATH`とAccess ODBCドライバー、`requirements-access.txt`の追加依存が必要です。
 - `POSTGRES_CONNECTION_URL`: 互換用の基本接続先です。通常は `appearance_inspection_db` を指定します。
 - `POSTGRES_APPEARANCE_CONNECTION_URL`: 外観検査記録DBです。不具合情報と数値検査員情報を参照します。
 - `POSTGRES_DELIVERY_LABEL_CONNECTION_URL`: 現品票DBです。QR履歴と品番検索候補を参照します。
@@ -60,6 +59,8 @@ POSTGRES_SCHEMA=public
 ```
 
 ## テスト
+
+Access SQLテストを含む全Testsには`requirements-access.txt`をインストールします。
 
 ```powershell
 .\.venv\Scripts\python.exe -m unittest discover
@@ -98,6 +99,8 @@ onefile の exe は次で作成します。
 ```powershell
 .\build_exe.ps1
 ```
+
+既定はPostgreSQL専用ビルドです。Access専用依存・設定を同梱せず、外置き設定をAccessへ変えても接続前に停止します。Access用コードは保持しています。切り戻し時は`requirements-access.txt`をインストールし、`.env`をAccess用に設定して`.\build_exe.ps1 -Backend access`で再ビルドします。詳細は [docs/RELEASE.md](docs/RELEASE.md)。
 
 ビルドスクリプトは `docs\app_icon.png` から `.ico` を生成し、`.env` を同梱したうえで PyInstaller onefile を作成します。
 

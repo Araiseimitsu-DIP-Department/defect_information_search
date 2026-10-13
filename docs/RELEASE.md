@@ -34,9 +34,13 @@
 .\build_exe.ps1
 ```
 
-build_exe.ps1はカレントをプロジェクトルートとしてdistとbuildを削除し、docs/app_icon.pngからICOを作成、.env・画面資産を同梱してPyInstaller onefile/windowedを生成する。最終成果物はdist/不具合情報検索.exe。終了時にspecとbuildを削除する。.envの認証情報が成果物内に含まれる。
+build_exe.ps1はプロジェクトルートからの実行を確認し、distとbuildを削除する。必要な旧成果物は実行前に保全する。docs/app_icon.pngからICOを作成し、設定・画面資産を同梱してPyInstaller onefile/windowedを生成する。最終成果物はdist/不具合情報検索.exe。成功時にspecとbuildを削除する。.envの認証情報が成果物内に含まれる。
 
-スクリプトはPythonExe引数を受け取る。PyInstallerの失敗がPowerShellの終了コードへ確実に伝わるかは未検証。成果物の存在だけで起動成功とは判断しない。
+既定の`-Backend postgres`はpyodbc・pypyodbc・Access Repository・Gatewayを除外し、同梱.envからACCESS_*と互換backendキーを除く。元の.envは変更しない。PostgreSQL運用ではACCESS_DB_PATHは不要。`build_backend.txt`を同梱し、PostgreSQL専用exeでAccessを選択すると接続前に停止する。外置き.envの探索順と環境変数優先は維持する。
+
+Accessに戻す場合は`requirements-access.txt`をインストールし、`.env`をAccess用に設定して`.\build_exe.ps1 -Backend access`で再ビルドする。設定ファイルのbackendとビルド指定が一致しない場合は停止する。両プロファイルともPG依存は維持する。
+
+PythonExe引数は従来どおり。PyInstallerや設定準備・成果物検査の失敗はエラーで停止する。生成exeのアーカイブを検査し、必要なPG・画面モジュールと資産、およびPGビルドのAccess依存不在を確認する。失敗時のbuildには診断資料・認証情報を含む設定が残り得る。成果物の存在だけで起動成功とは判断しない。調査・検証の詳細は [BUILD_OPTIMIZATION](BUILD_OPTIMIZATION.md)。
 
 ## 配布・復旧の確認事項
 

@@ -23,7 +23,7 @@ PGの検査員補完はロットをtrimし、process_nameに数値検査を含�
 
 | 環境変数 | 役割・現在の読込動作 |
 | --- | --- |
-| ACCESS_DB_PATH | backendに関係なく必須。パスの設定値が必要だがPG起動時にAccessへの接続はしない |
+| ACCESS_DB_PATH | Access運用時のみ必須。PG起動時にAccessへの接続・専用モジュール読込みはしない |
 | ACCESS_APPEARANCE_DB_PATH | Accessの集計出力専用の外観検査DBパス。未設定時はACCESS_DB_PATHを使う。通常・保存の集計テーブルがない場合はエラーで停止し、指示日へ代用しない |
 | DB_BACKEND | access / postgres。未指定時はaccess。DATABASE_BACKENDを互換用に使用 |
 | POSTGRES_CONNECTION_URL | 用途別未指定時の基本接続先。POSTGRES_DSNを互換用に使用 |

@@ -36,20 +36,19 @@ class AppConfig:
                 break
 
         db_path = os.getenv("ACCESS_DB_PATH", "").strip().strip('"')
-        if db_path.startswith("\\") and not db_path.startswith("\\\\"):
-            db_path = "\\" + db_path
-        if not db_path:
-            raise ValueError(
-                "ACCESS_DB_PATH が見つかりません。"
-                "\n.exe と同じフォルダ、または 1 つ上のフォルダに .env を置くか、"
-                "環境変数 ACCESS_DB_PATH を設定してください。"
-            )
-
         database_backend = (
             os.getenv("DB_BACKEND") or os.getenv("DATABASE_BACKEND") or "access"
         ).strip().lower() or "access"
         if database_backend not in {"access", "postgres"}:
             raise ValueError("DB_BACKEND は access か postgres を設定してください。")
+        if db_path.startswith("\\") and not db_path.startswith("\\\\"):
+            db_path = "\\" + db_path
+        if not db_path and database_backend == "access":
+            raise ValueError(
+                "ACCESS_DB_PATH が見つかりません。"
+                "\n.exe と同じフォルダ、または 1 つ上のフォルダに .env を置くか、"
+                "環境変数 ACCESS_DB_PATH を設定してください。"
+            )
 
         postgres_dsn = (
             os.getenv("POSTGRES_CONNECTION_URL") or os.getenv("POSTGRES_DSN") or ""

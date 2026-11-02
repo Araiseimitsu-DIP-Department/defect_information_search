@@ -114,8 +114,8 @@ onefile の exe は次で作成します。
 
 ## 主な機能
 
-- 品番候補検索（PostgreSQLでは大文字小文字を区別せず、例: `3d025` で `3D025...` を候補表示）
-- 候補一覧からの詳細表示
+- 品番の候補検索（PostgreSQLでは大文字小文字を区別せず、例: `3d025` で `3D025...` を候補表示）
+- 候補を選んだあとの不具合表示。ワンクリックは選択、不具合表示ボタンまたはダブルクリックで一覧を出す
 - 号機絞り込み
 - 合計値・不具合内訳表示
 - 表示中データの Excel 出力
@@ -131,7 +131,7 @@ Access運用で外観検査集計の通常・保存テーブルが検索DBにな
 - `docs/DESIGN.md` is the primary UI reference for the WebView screen tokens, spacing, cards, tables, and buttons.
 - This screen has no page menu, so the left sidebar is not used.
 - The ARAI logo is placed in the title row and bundled from `src/defect_information_search/webview/assets/arai_logo.png`.
-- The footer is rendered at the bottom of the WebView with the standard copyright text.
+- The footer is rendered at the bottom of the WebView with the standard copyright text. The application version is shown at the right of the same footer.
 
 ## Display Size Notes
 

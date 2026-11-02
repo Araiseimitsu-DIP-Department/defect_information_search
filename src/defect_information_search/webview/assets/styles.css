@@ -188,8 +188,19 @@ select:focus-visible {
 
 .search-row {
   display: grid;
-  grid-template-columns: 3.75rem 1fr;
+  grid-template-columns: 3.75rem minmax(0, 1fr);
   gap: 0.5rem;
+}
+
+.search-row-action {
+  grid-template-columns: 3.75rem minmax(0, 1fr) auto;
+}
+
+.search-row-action .button,
+.search-date-row .button {
+  padding-right: 0.625rem;
+  padding-left: 0.625rem;
+  white-space: nowrap;
 }
 
 .search-date-row {
@@ -271,6 +282,16 @@ input[readonly] {
 
 .button-primary:hover {
   background: linear-gradient(180deg, #2d95ee 0%, var(--color-accent-hover) 100%);
+}
+
+.button:disabled {
+  cursor: default;
+  opacity: 0.45;
+  box-shadow: none;
+}
+
+.button-primary:disabled:hover {
+  background: linear-gradient(180deg, var(--color-accent) 0%, var(--color-accent-hover) 100%);
 }
 
 .button-secondary,
@@ -468,6 +489,7 @@ input[readonly] {
 }
 
 .app-footer {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -477,6 +499,12 @@ input[readonly] {
   font-size: 0.75rem;
   background: var(--color-surface);
   border-top: 1px solid var(--color-border-subtle);
+}
+
+.app-version {
+  position: absolute;
+  right: 0.75rem;
+  font-variant-numeric: tabular-nums;
 }
 
 .detail-toolbar {

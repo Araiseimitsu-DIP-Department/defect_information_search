@@ -25,9 +25,10 @@
         <article class="panel panel-search">
           <h2>検索条件</h2>
           <div class="search-form">
-            <div class="search-row">
+            <div class="search-row search-row-action">
               <label for="keyword">品番</label>
               <input id="keyword" type="text" autocomplete="off">
+              <button id="candidate-search-btn" class="button button-primary" type="button">候補検索</button>
             </div>
             <div class="search-row">
               <label for="part-name">品名</label>
@@ -43,7 +44,7 @@
               <span class="date-separator">～</span>
               <label for="search-to">終了日</label>
               <input id="search-to" type="date">
-              <button id="search-btn" class="button button-primary" type="button">検索</button>
+              <button id="show-defects-btn" class="button button-primary" type="button" disabled>不具合表示</button>
             </div>
           </div>
         </article>
@@ -137,6 +138,7 @@
       </main>
       <footer class="app-footer">
         <span>&copy; ARAISEIMITSU 2026 - Created By DIP Department</span>
+        <span id="app-version" class="app-version">v1.1.0</span>
       </footer>
     </div>
   </div>

@@ -6,7 +6,7 @@ from typing import Any
 
 import pandas as pd
 
-from defect_information_search.config import APP_NAME
+from defect_information_search.config import APP_NAME, APP_VERSION
 from defect_information_search.models import DEFECT_FIELDS
 from defect_information_search.services.defect_service import DETAIL_COLUMNS as SERVICE_DETAIL_COLUMNS
 from defect_information_search.services.defect_service import DefectService, SearchResult
@@ -63,6 +63,7 @@ class WebviewBridge:
         return {
             "ok": True,
             "app_name": APP_NAME,
+            "app_version": APP_VERSION,
             "default_search_from": default_from.isoformat(),
             "default_search_to": today.isoformat(),
             "defect_fields": [label for label, _ in DEFECT_FIELDS],

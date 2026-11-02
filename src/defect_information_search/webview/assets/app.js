@@ -1,6 +1,7 @@
 const state = {
   bootstrap: null,
   products: [],
+  selectedPartNumber: null,
   currentPart: null,
   currentSearchResult: null,
   currentMachine: '全て',
@@ -57,13 +58,15 @@ function $(id) {
 function bindElements() {
   [
     'app-title',
+    'app-version',
     'close-btn',
     'keyword',
     'part-name',
     'customer',
     'search-from',
     'search-to',
-    'search-btn',
+    'candidate-search-btn',
+    'show-defects-btn',
     'product-count',
     'product-body',
     'export-from',
@@ -220,18 +223,59 @@ async function selectProductFromRow(row, product, loadDetails = true) {
   const partNumber = escapeText(product['品番'] ?? product['part_number']);
   const partName = escapeText(product['品名'] ?? product['part_name']);
   const customer = escapeText(product['客先'] ?? product['customer']);
+  const partChanged = state.currentPart && state.currentPart !== partNumber;
+  state.selectedPartNumber = partNumber;
   elements['keyword'].value = partNumber;
   elements['part-name'].value = partName;
   elements['customer'].value = customer;
+  updateShowDefectsButton();
   if (loadDetails) {
     await loadProductDetails(partNumber, false);
+    return;
   }
+  if (partChanged) {
+    state.currentPart = null;
+    state.currentSearchResult = null;
+    renderSummary({});
+    renderDetails({ columns: state.detailColumns, rows: [] });
+    elements['detail-count'].textContent = '0件';
+    updateFilterState();
+  }
+}
+
+function updateShowDefectsButton() {
+  elements['show-defects-btn'].disabled = !state.selectedPartNumber;
+}
+
+function clearSelectedProductView() {
+  state.selectedPartNumber = null;
+  state.currentPart = null;
+  elements['part-name'].value = '';
+  elements['customer'].value = '';
+  [...elements['product-body'].querySelectorAll('tr')].forEach((el) => el.classList.remove('selected'));
+  state.currentSearchResult = null;
+  renderSummary({});
+  renderDetails({ columns: state.detailColumns, rows: [] });
+  elements['detail-count'].textContent = '0件';
+  updateFilterState();
+  updateShowDefectsButton();
+}
+
+function onKeywordEdited() {
+  const keyword = elements['keyword'].value.trim();
+  if (!state.selectedPartNumber || keyword === state.selectedPartNumber) {
+    return;
+  }
+  clearSelectedProductView();
 }
 
 function renderBootstrap(bootstrap) {
   state.bootstrap = bootstrap;
   state.detailColumns = bootstrap.detail_columns || [];
   elements['app-title'].textContent = bootstrap.app_name || '不具合情報検索';
+  if (bootstrap.app_version) {
+    elements['app-version'].textContent = `v${bootstrap.app_version}`;
+  }
   elements['search-from'].value = bootstrap.default_search_from;
   elements['search-to'].value = bootstrap.default_search_to;
   elements['export-from'].value = bootstrap.default_search_from;
@@ -438,13 +482,7 @@ async function searchProducts() {
     const products = response.products?.rows || [];
     if (products.length === 0) {
       renderProducts([]);
-      state.currentPart = null;
-      elements['part-name'].value = '';
-      elements['customer'].value = '';
-      state.currentSearchResult = null;
-      renderSummary({});
-      renderDetails({ columns: state.detailColumns, rows: [] });
-      elements['detail-count'].textContent = '0件';
+      clearSelectedProductView();
       await infoDialog('検索結果', state.bootstrap?.messages?.no_products || '該当する品番はありません。');
       return;
     }
@@ -454,21 +492,21 @@ async function searchProducts() {
       const row = elements['product-body'].querySelector('tr');
       await selectProductFromRow(row, products[0]);
     } else {
-      state.currentPart = null;
-      elements['part-name'].value = '';
-      elements['customer'].value = '';
-      state.currentSearchResult = null;
-      renderSummary({});
-      renderDetails({ columns: state.detailColumns, rows: [] });
-      elements['detail-count'].textContent = '0件';
-      updateFilterState();
-      toast('候補一覧から品番を選択してください。');
+      clearSelectedProductView();
+      toast('候補を選んで「不具合表示」を押してください。');
     }
   } catch (error) {
     await errorDialog(error?.message || String(error));
   } finally {
     setBusy(false);
   }
+}
+
+async function showSelectedDefects() {
+  if (!state.selectedPartNumber) {
+    return;
+  }
+  await loadProductDetails(state.selectedPartNumber, true);
 }
 
 async function loadProductDetails(partNumber, showBusy = true) {
@@ -615,13 +653,15 @@ function wireEvents() {
   elements['close-btn'].addEventListener('click', async () => {
     await callApi('close_app');
   });
-  elements['search-btn'].addEventListener('click', searchProducts);
+  elements['candidate-search-btn'].addEventListener('click', searchProducts);
+  elements['show-defects-btn'].addEventListener('click', showSelectedDefects);
   elements['keyword'].addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
       event.preventDefault();
       searchProducts();
     }
   });
+  elements['keyword'].addEventListener('input', onKeywordEdited);
   elements['machine-select'].addEventListener('change', applyMachineFilter);
   elements['table-search'].addEventListener('input', (event) => {
     state.tableQuery = event.target.value;

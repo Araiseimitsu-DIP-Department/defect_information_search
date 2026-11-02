@@ -9,6 +9,8 @@ from dotenv import load_dotenv
 
 
 APP_NAME = "不具合情報検索"
+# 画面変更前の状態が 1.0.0。操作の追加は minor、修正は patch、検索・出力結果の非互換は major。
+APP_VERSION = "1.1.0"
 APP_USER_MODEL_ID = "defect_information_search"
 # アイコン元画像（docs 配下）。
 APP_ICON_SOURCE_FILENAME = "app_icon.png"

@@ -44,7 +44,7 @@ PythonExe引数は従来どおり。PyInstallerや設定準備・成果物検査
 
 ## 配布・復旧の確認事項
 
-正式バージョンの付け方、配布経路、対象PC、成果物の保管、リリース承認者、バックアップ・復旧手順はUnknown。現在のアプリコードが使うDBは3種類。READMEの4DB記載との差は [KNOWN_GAPS](KNOWN_GAPS.md) を参照する。
+版番号は `config.py` の `APP_VERSION` だけを更新する。画面変更前が 1.0.0、候補検索と不具合表示の分離が 1.1.0。操作や出力の追加は minor、不具合修正は patch、検索・出力結果が変わる非互換は major。画面はフッター右に `v` 付きで表示する。履歴は [update](update.md) に版番号を記し、別の変更履歴は作らない。配布経路、対象PC、成果物の保管、リリース承認者、バックアップ・復旧手順はUnknown。現在のアプリコードが使うDBは3種類。READMEの4DB記載との差は [KNOWN_GAPS](KNOWN_GAPS.md) を参照する。
 
 Access切り戻しの設定例は [postgresql-migration](postgresql-migration.md)。DB間の結果同等性は未検証。設定切替はDB移行のロールバックではない。
 

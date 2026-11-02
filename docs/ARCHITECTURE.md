@@ -16,7 +16,7 @@
 
 | パス | 役割 |
 | --- | --- |
-| `src/defect_information_search/config.py` | 環境設定・接続先・アプリ識別情報 |
+| `src/defect_information_search/config.py` | 環境設定・接続先・アプリ識別情報・版番号 |
 | `webview/app.py` | pywebview / Edge WebView2起動、Repository選択 |
 | `webview/assets/` | HTML・vanilla CSS・JavaScript・ロゴ |
 | `application/ports/defect_repository.py` | RepositoryのProtocol |
